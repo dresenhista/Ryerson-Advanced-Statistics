@@ -1,0 +1,82 @@
+############################################################
+##                  Quiz2                            #######
+############################################################
+#for my information about the database that we'll be using in this file, type ?mtcars in r project
+
+#load data mtcars variable mpg and weight and calculate the sample size
+y <- mtcars$mpg; 
+x <- mtcars$wt; 
+n <- length(y)
+
+#calculate beta0 and beta1 regression parameters manually
+beta1 <- cor(y, x) * sd(y) / sd(x)
+beta0 <- mean(y) - beta1 * mean(x)
+
+#calculate the model error and its variation
+e <- y - beta0 - beta1 * x
+sigma <- sqrt(sum(e^2) / (n-2)) 
+ssx <- sum((x - mean(x))^2)
+
+#calculate model parameters variation around x
+seBeta0 <- (1 / n + mean(x) ^ 2 / ssx) ^ .5 * sigma 
+seBeta1 <- sigma / sqrt(ssx)
+
+#calculate the statistics to test the model as well as its p-value
+tBeta0 <- beta0 / seBeta0; tBeta1 <- beta1 / seBeta1
+pBeta0 <- 2 * pt(abs(tBeta0), df = n - 2, lower.tail = FALSE)
+pBeta1 <- 2 * pt(abs(tBeta1), df = n - 2, lower.tail = FALSE)
+xVals <-1
+yVals <- beta0 + beta1 * xVals
+
+se1 <- sigma * sqrt(1 / n + (xVals - mean(x))^2/ssx)
+se2 <- sigma * sqrt(1 + 1 / n + (xVals - mean(x))^2/ssx)
+
+
+
+
+########################################################
+##                      Quiz 3						####
+########################################################
+
+#Q1-load data mtcars variable mpg and weight and calculate the sample size, now we are also adding a new variable called cyl
+y <- mtcars$mpg; 
+x <- mtcars$wt; 
+x2<- mtcars$cyl; 
+n <- length(y)
+
+#calculating the models estimative using factor of the second variable
+coef(lm(y ~ factor(x2) + x - 1)) 
+
+
+#Q2- now we exclude the intercept and the variable weight
+coef(lm(y~factor(x2)-1))
+(compare this to the results of the Q1)
+
+Q3-
+fit1<-lm(y~factor(x2)+x)
+fit2 <- lm(y ~ factor(x2)*x + x + x2*x)
+anova(fit1, fit2)
+
+Q4-
+fit3 <- lm(y ~ I(x*0.5) + factor(x2)-1);
+fit4 <- lm(y ~ I(x) + factor(x2)-1);
+
+Q5-
+x <- c(0.586, 0.166, -0.042, -0.614, 11.72)
+y <- c(0.549, -0.026, -0.127, -0.751, 1.344)
+fit4<-lm(y~x)
+inflm.SR <- influence.measures(fit4)
+summary(inflm.SR)
+
+Q6-
+x <- c(0.586, 0.166, -0.042, -0.614, 11.72)
+y <- c(0.549, -0.026, -0.127, -0.751, 1.344)
+
+###########################
+####       Q4   	#######
+###########################
+
+Q1- 
+logRegshuttle <- glm(use ~ wind,family="binomial", data=shuttle )
+summary(logRegshuttle)
+exp(logRegshuttle$coeff)
