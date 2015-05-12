@@ -1,0 +1,81 @@
+---
+title: "Project"
+output: pdf_document
+---
+
+Simulating the exponential
+
+```{r}
+n= 40
+lambda = 0.2
+k=10000
+list_of_exponential = array(1:k)
+
+for(i in 1:k){
+  list_of_exponential[i] = mean(rexp(n, lambda))
+}
+
+```
+
+Question 1- Let's calculate where the distribution of means is centered and compare to the theoretical center
+
+```{r}
+mean_of_average = mean(list_of_exponential)
+mean_of_average
+```
+Meanwhile, the expected value for mean is 1/lambda = 5. 
+```{r}
+sd_mean = sd(list_of_exponential)
+sd_mean
+
+```
+The expected Standard Deviation  is {[1/(lambda)^(2)]/n}^(0.5)
+```{r, echo=FALSE}
+std<-((1/lambda)/sqrt(40))
+std
+```
+
+
+1- When we compare the theoretical center we were expecting the average to be 5. it's 5.07.
+
+2- And we were expecting the standard deviation to 0.79 and it's 0.784.
+
+
+3-For the approximation to a normal, we can check the figure 1 in the appendix. the curve is a normal(5,0.7906) and the histogram is referent to the the mean distribution.
+We can see that it clearly looks like a normal. To understand how well fitted is the model I have generate 1000 normal variables (Figure 2) as if I wanted to check how they look like, and they are as good as the exponential distribution (even better in my opinion). So we can conclude that when n increases, the exponential converges to a normal.
+
+4- As 1/lambda is the mean for this distribution we have that at 95% of confidence the mean is in this interval:
+```{r, echo=FALSE}
+mean(list_of_exponential) + c(-1,1)*1.96*sd(list_of_exponential)/sqrt(nrow(list_of_exponential))
+
+```
+
+#Conclusion:
+
+From the points above we can conclude that the hypothesis of convergence is consistent for exponential distribution and the mean of n exponential converges to the distribution mean.
+
+
+\newpage
+
+#Appendix
+
+Figure 1
+
+```{r, fig.width=8, fig.height=4.0, echo=FALSE}
+    hist(list_of_exponential, freq= FALSE, col = "blue", main = "Histogram of simulated mean", xlab = "mean of exponential")
+    curve(dnorm(x, mean=5, sd=std), 
+          col="red", lwd=2, add=TRUE)
+
+
+```
+
+
+Figure 2
+
+```{r, fig.width=8, fig.height=4.0, echo=FALSE}
+x<-rnorm(1000,5, std) 
+hist(x, freq= FALSE, col = "green",main = "Histogram of normal with mean(5,0.7906)")
+curve(dnorm(x, mean=5, sd=std), 
+          col="red", lwd=2, add=TRUE)
+
+```
