@@ -1,9 +1,29 @@
 ---
-title: "Project"
-output: pdf_document
+title: "Inference Statistics- Distribution"
+author: "Andresa de Andrade"
+date: "July 2, 2014"
+output:
+  pdf_document:
+    fig_caption: yes
+    keep_tex: yes
+    number_sections: yes
+    toc: yes
+    
+  html_document:
+    fig_caption: yes
+    bibliography: bibliography.bib
 ---
 
-Simulating the exponential
+<div id="toc">
+<ul><li>
+\newpage 
+
+#<a href="#toc_0">Exponential Distribuition</a>
+
+
+
+
+Simulating a exponential variable with lambda 0.2 and k = 10000
 
 ```{r}
 n= 40
@@ -17,7 +37,7 @@ for(i in 1:k){
 
 ```
 
-Question 1- Let's calculate where the distribution of means is centered and compare to the theoretical center
+Let's calculate where the distribution of means is centered and compare to the theoretical center
 
 ```{r}
 mean_of_average = mean(list_of_exponential)
@@ -50,18 +70,20 @@ mean(list_of_exponential) + c(-1,1)*1.96*sd(list_of_exponential)/sqrt(nrow(list_
 
 ```
 
-#Conclusion:
+</li></ul>
+<ul> <li>
+# <a href="#toc_1">Conclusion</a>
 
 From the points above we can conclude that the hypothesis of convergence is consistent for exponential distribution and the mean of n exponential converges to the distribution mean.
 
-
 \newpage
 
-#Appendix
+</li></ul>
+<ul> <li>
+# <a href="#toc_1">Appendix</a>
 
-Figure 1
 
-```{r, fig.width=8, fig.height=4.0, echo=FALSE}
+```{r, fig.width=8, fig.height=4.0, fig.cap="Histogram of Simulated Mean", echo=FALSE}
     hist(list_of_exponential, freq= FALSE, col = "blue", main = "Histogram of simulated mean", xlab = "mean of exponential")
     curve(dnorm(x, mean=5, sd=std), 
           col="red", lwd=2, add=TRUE)
@@ -70,12 +92,17 @@ Figure 1
 ```
 
 
-Figure 2
 
-```{r, fig.width=8, fig.height=4.0, echo=FALSE}
+
+```{r, fig.width=8, fig.cap="Histogram ofg a Normal distribution.", fig.height=4.0, echo=FALSE}
 x<-rnorm(1000,5, std) 
 hist(x, freq= FALSE, col = "green",main = "Histogram of normal with mean(5,0.7906)")
 curve(dnorm(x, mean=5, sd=std), 
           col="red", lwd=2, add=TRUE)
 
 ```
+
+
+</li></ul>
+</li></ul>
+</div>
