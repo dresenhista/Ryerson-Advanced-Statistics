@@ -1,0 +1,61 @@
+---
+title: "Handwriting Recognition Using KNN"
+author: "Andresa de Andrade"
+date: "March 26, 2015"
+output: pdf_document
+---
+\newpage
+
+#Introduction
+One of most challenging problems in these days is to recognize patterns for images.
+In this document the methodology KNN is applied in order to find patterns in the hand writing of numbers from 0-9 and try to predict them using these patterns.
+
+In this aspiration we have challenges such as: 
+- each person has their own way of writing a number;
+- some numbers are very similar to others, like 1 and 7, or 6, 8 and 9.
+- find the better number of neighborhood in order to optimize the algorithm.
+
+#Data Explanation
+In order to apply this algorithm we have each number divided in a matrix 4 x 4 resulting in 16 variables presented as columns in our data set. The last column is the number class.
+
+For this project we have two files, one for training and one for testing. The testing data set contains 3497 samples and the training has 7493.
+
+#KNN
+
+So training our model to use k=5, our confusion matrix has too many 7 classified as number 1and too many 6 as number 0.
+
+```{r, echo=FALSE}
+library(RWeka)
+tdata<-read.csv("pendigits.tra.csv", h=F)
+testing_data<-read.csv("pendigits.tes.csv", h=F)
+vector_names<-c("x1")
+for(i in 2:16){
+  vector_names<-rbind(vector_names, paste("x",i, sep=""))
+
+}
+vector_names<-rbind(vector_names, "class")
+vector_names<-as.vector(vector_names)
+names(tdata)<-vector_names
+names(testing_data)<-vector_names
+testing_data$class<-as.factor(testing_data$class)
+tdata$class<-as.factor(tdata$class)
+classifier <- IBk(class ~., data = tdata,
+                  control = Weka_control(K = 5))
+evaluate_Weka_classifier(classifier, testing_data)
+
+
+```
+So we have a accuracy of 97.59% of the cases, and in this project we need to find the best K for set of data.
+
+Running the same algorithm for other cases we found that k=1 has the best Correctly Classified Instances:
+
+```{r, echo=FALSE}
+
+classifier <- IBk(class ~., data = tdata,
+                  control = Weka_control(K = 1))
+evaluate_Weka_classifier(classifier, testing_data)
+
+
+```
+
+So running the algorithm for k=1 we have a percentage of accuracy of 97.74% of the cases. We also reduce the cases that 7 and 1 have gotten mislabeled.

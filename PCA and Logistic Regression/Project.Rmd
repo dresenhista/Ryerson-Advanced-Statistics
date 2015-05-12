@@ -1,0 +1,491 @@
+
+---
+title: "The Wine Vinho Verde"
+author: "Andresa de Andrade"
+date: "April 2, 2015"
+output:
+  pdf_document:
+    fig_caption: yes
+    keep_tex: yes
+    number_sections: yes
+    toc: yes
+    
+  html_document:
+    fig_caption: yes
+    bibliography: bibliography.bib
+---
+
+
+
+<div id="toc">
+<ul><li>
+\newpage 
+
+#<a href="#toc_0">Problem Introduction</a>
+The motivation of this project is to predict the quality of the wine based on the the following variables:
+
+ - Fixed Acidity;
+ - Volatile Acidity;
+ - Citric Acid;
+ - Residual Sugar;
+ - Chlorides;
+ - Free Sulfur Dioxide;
+ - Total Sulfur Dioxide
+ - Density
+ - pH;
+ - Sulfates;
+ - Alcohol;
+ 
+ The quality was based on sensor data. Due privacy and logistic issues there's no further information on how the data was collected or how many people had been used as Evaluators.
+ 
+ In order to predict the quality of the wine here presented, more than one methodology will be tested for learning purposes.
+ 
+ 
+</li></ul>
+<ul> <li>
+
+
+# <a href="#toc_1">Exploratory Analysis</a>
+
+```{r, echo=FALSE}
+#reading data
+data<-read.csv("winequality-red.csv", sep=";")
+
+
+#Treating data names to look preety in our charts/analysis
+
+data_names<-names(data)
+
+simpleCap <- function(x) {
+
+  s <- strsplit(x, " ")[[1]]
+  paste(toupper(substring(s, 1,1)), substring(s, 2),
+        sep="", collapse=" ")
+}
+
+data_names<-as.vector(sapply(data_names, gsub, pattern="[.]", replacement = " "))
+data_names<-as.vector(sapply(data_names, simpleCap))
+#####################
+
+num_variables = length(data)-1
+
+
+```
+
+  It's interesting to understand if the data set has any outliers or even missing information. Because, if positive, it'd be necessary some treatment prior to the data exploration.  
+
+
+
+
+  Based on histograms in the appendix section, it's possible to infer that the data set has some outliers affecting the model performance (and it has no missing values). For learning purposes, the data will be used as it's and the influence of outliers will be bring up later on this document.
+
+
+
+This is how the output variable behaviors: 
+\newpage
+
+
+```{r, echo=FALSE, fig.keep='first', fig.cap="Histogram of Quality of Wine", fig.height=3, fig.width=5}
+hist(data$quality, main = "Wine Ratings", xlab= "Rates", freq=F)
+```  
+
+  
+It's noticeable that the majority of the grades are between 5 and 6 but it's also possible to observe that the rates are slightly skewed to 7 due the heavy tail.  
+
+The question is what is relevant for the wine to be highly rated.
+
+To try to answer this question, it's necessary to go back to the (cor)relation between the grades and wine characteristics described in the data set.  
+
+## <a href="#toc_1">Sulfur Dioxide</a>
+
+Let's start by the Sulfur Dioxide SO~2~. This substance has two main properties within the wine making process. First is to preserve the wine, preventing from oxidation. The second is to bind the acetaldehyde, since this last one has an unpleasant smell of bruised apple or rank sherry and it could affect the final taste of the wine. \cite{so2}
+
+In the data set there are two variables dedicated to SO~2~, one is called free sulfur dioxide and is a natural result of fermentation. And the other is Total Sulfur Dioxide being the result of the sum of free SO~2~ and the level manually added.
+
+
+This is a good example of a pair of variable that might be correlated and could be aggregate in a single one.
+
+
+```{r, echo=FALSE, fig.cap="Box plot of Level of Sulfur Dioxide by rating", fig.height=4, fig.width=5}
+
+#function that calculate the boxplot by rate for an specific variable using column name as arg
+byrate_hist<-function(x, label){
+  boxplot_string = ""
+  x_label<-array()
+  
+  for(grade in 1:10){
+    first_graph<-paste("data[data$quality==",grade, ",]$",x)
+    boxplot_string = paste(boxplot_string, first_graph, ",")
+    x_label[grade]<-paste("rate", grade)
+  }
+  first_string <-paste(boxplot_string, "main = '", label, "by Wine Rates'")
+  
+  lim_sup<-eval(parse(text = paste("max(data$", x,")*1.05")))
+  lim_inf<-eval(parse(text = paste("min(data$", x,")*0.95")))
+  
+  second_string = paste("boxplot(", first_string, ", ylim=c(", lim_inf, ",", lim_sup,"), xlim=c(2.5,8.5))")
+  
+  test<-eval(parse(text =second_string))
+  axis(1, 1:10,x_label)
+  
+}
+
+byrate_hist("total.sulfur.dioxide", "Total level of So2")
+
+```
+
+
+
+```{r, warning=FALSE, echo=FALSE}
+#function that creates the summary table for a specific variable using index as arg
+library(knitr)
+create_summary_table<-function (x) {
+  median_alc<-aggregate(data[,x], list(data$quality), median)
+  mean_alc<-aggregate(data[,x], list(data$quality), mean)
+  min_alc<-aggregate(data[,x], list(data$quality), min)
+  max_alc<-aggregate(data[,x], list(data$quality), max)
+  sd_alc<-aggregate(data[,x], list(data$quality), sd)
+  summary_table<-data.frame(median_alc, mean_alc[,2], min_alc[,2], max_alc[,2], sd_alc[,2])
+  return(summary_table)
+}
+
+summary_table<-create_summary_table(7)
+names(summary_table)<-c("Rates", "Mean", "Median", "Min", "Max", "Standard Deviation")
+knitr::kable(summary_table, caption = "Total Sulfur Dioxide Summary")
+```
+
+
+Combining the Figure 2 and the Table 1 we can see that the range level of So~2~ between 15 and 48 increases the likelihood of having high rates.
+ </li></ul>
+## <a href="#toc_1">Volatile Acidity</a>
+
+From the correlation table it's also possible to see that Volatile Acidity is significant for the sensorial analysis of the wine.
+
+
+```{r, echo=FALSE, fig.cap="Level of Volatile Acidity", fig.height=4, fig.width=5}
+byrate_hist("volatile.acidity", "Volatile Acidity")
+
+```
+
+\newpage
+
+From Figure 2 and Table 2 it's possible to infer that the level of alcohol has a negative correlation to the wine rates, in another words, the lower the vol acidity the higher the rates.
+
+
+```{r, echo=FALSE}
+summary_table_alc<-create_summary_table(2)
+names(summary_table_alc)<-c("Rates", "Mean", "Median", "Min", "Max", "Standard Deviation")
+knitr::kable(summary_table_alc, caption = "Vol Acidity Summary")
+```
+
+
+</li></ul> 
+## <a href="#toc_1">Alcohol</a>
+
+From the appendix section the other relevant substance is alcohol, the graphic and table below describe the distribution of level of alcohol for different rates
+
+\newpage
+```{r, echo=FALSE, fig.cap="Total Level of alcohol"}
+byrate_hist("alcohol", "Total level of Alcohol")
+
+```
+
+From Figure 3 and Table 3 it's possible to infer that the level of alcohol has a positive effect in the wine quality.
+
+
+```{r, echo=FALSE}
+
+summary_table_alc<-create_summary_table(11)
+names(summary_table_alc)<-c("Rates", "Mean", "Median", "Min", "Max", "Standard Deviation")
+knitr::kable(summary_table_alc, caption = "Alcohol Summary")
+```
+
+
+</li></ul> 
+</li></ul>  
+
+\newpage
+
+# <a href="#toc_2">Correlation and PCA</a>
+
+
+## <a href="#toc_2">Correlation Analysis</a>
+
+The Table 3 helps to confirm that Free SO~2~ and Total SO~2~ have a significant correlation between each other. 
+
+It also confirms that the most important/relevant for high rates is alcohol, and volatile acidity has a negative effect in the wine quality.
+
+At this point, it's important to highlight that having a high correlation doesn't mean having a causality.
+
+```{r, echo=FALSE, fig.cap="Correlation of variables"}
+
+
+#plot(data)
+```
+
+```{r, echo=FALSE}
+table_cor<-cor(data)
+table_cor<-data.frame(table_cor)
+names_cor<-c("Acid", "Vol.Acid", "Citr.Acid", "Sugar", "Chlor", "FreeSO2", "TotalSo2", "Den", "pH", "Sulph", "Alchool", "Qlity")
+names(table_cor)<-names_cor
+rownames(table_cor)<-names_cor
+knitr::kable(table_cor, caption = "Correlation Matrix", digits = 2)
+```
+
+
+we can see from the table above some interesting highlights. The first one is that we were right about the correlation between Free SO~2~ and Total So~2~ variables, hence we might combined them in one single variable.
+</li></ul> 
+## <a href="#toc_2">Principal Component Analysis</a>
+
+
+
+The application of Principal Component only depends on the data covariance (or correlation) matrix, ie, it's not necessary to assume any distribution for the data. Which makes the methodology much easier to use since there's no assumption for the data distribution.\cite{pca}
+
+The graphic below shows the main components for the explanation of the variance. The table is built to carry the heaviest proportion of the variance in the first components.
+
+
+```{r, echo=FALSE, fig.width=3.5, fig.height=3.5, fig.cap = "Proportion of Variance Explained by Principal Component"}
+pca <- prcomp(data[,1:11])
+plot(pca, type ="l", main = "Principal Component Analysis")
+
+#summary(pca)
+```  
+
+
+
+```{r, echo=FALSE}
+summary_pca<-summary(pca)
+
+percent <- function(x, digits = 2, format = "f", ...) {
+  paste0(formatC(100 * x, format = format, digits = digits, ...), "%")
+}
+t1<-percent(summary_pca$importance[2,])
+t2<-percent(summary_pca$importance[3,])
+variance_pca<-cbind(t1,t2)
+colnames(variance_pca)<-c("PVE", "Accumulated PVE")
+rnames<-array()
+for(i in 1:11){
+  rnames[i]<-paste("PC",i, sep = "")
+}
+
+rownames(variance_pca)<-rnames
+variance_pca<-data.frame(variance_pca)
+
+knitr::kable(variance_pca, caption = "Proportion of Variance Explained by Components")
+```
+
+The criteria to evaluate a good model is around 80 being good and greater than 99.5 being excellent, it's important to mention that as the variance, the PVE can variate with the problem. For this project we will consider the first 3 component which consolidates 99.7% of the variance of our variables. The reason that we reduced the number of variables from 11 to 3 is because the data set has a high correlation, therefore it doesn't vary or it has the same variation.
+
+Besides reducing the number of variables for the model, the component also highlights any particular evidence for clusters.
+
+
+```{r, echo=FALSE}
+eigenvalues<-round(pca$sdev,2)
+names<-data_names[1:11]
+eigenvalues<-cbind(names, eigenvalues)
+eigenvalues<-data.frame(eigenvalues)
+names(eigenvalues)<-c("a", "b")
+eigenvalues<-eigenvalues[with(eigenvalues, order(b)),]
+names(eigenvalues)<-c("Variables", "EigenValues")
+knitr::kable(eigenvalues, caption = "Eigenvalues", digits=2)
+```
+
+Based on eigenvalues we can observe that Acidity is more mixed within the rates in a way that most of the variability of the model are in these two variables.
+
+Alcohol, Sulfate and Density for example are substances that are important to the final grade, since their variability is very important and they have a positive correlation to the increase of the rates.
+
+Plotting the first two components we have the following graph:
+
+```{r, warning=FALSE, echo=FALSE, fig.cap="First and third Component plots - Some Clusters are more highlited than others."}
+library(lattice)
+library(directlabels)
+
+t2<-cbind(pca$x[,1], pca$x[,3], data$quality)
+direct.label(xyplot(t2[,2]~t2[,1],groups=t2[,3], ylab="Component 3", xlab = "Component 1", main = "Plot of the first and third Principal Component"))
+
+```
+We can see that the 5 rates is lower but also more expanded than the others.
+
+
+
+</li></ul> </li></ul> 
+\newpage
+
+# <a href="#toc_2">Classification Model</a>
+The classification methodology that we'll be using in this document is the Logistic Regression. The reason we chose this model rather than the other classification methodologies is because this method shares the properties of all other memory-based classification methods  - defer most of the processing of the training data point until after a query is made - and has some particular qualities like simplicity, capability of extrapolating and a known confidence interval. \cite{log}
+
+
+
+```{r, warning=FALSE, echo=FALSE, fig.cap="First and third Component plots - Some Clusters are more highlited than others."}
+data_2<-data
+data_2[,12]<-as.factor(data_2[,12])
+
+formula_text <- paste(names(data_2[12]),"~",paste(names(data[1:11]), collapse="+"))
+formula_raw <- as.formula(formula_text)
+fit <- glm(formula_raw,data=data_2,family=binomial())
+summary(fit)
+
+``` 
+
+The table above shows the scores for all variables. Based on the last column, it's possible to choose the relevant coefficients (with p-value < 0.10). So for the final model we have:
+\begin{itemize}
+
+\item volatility acidity;
+\item chlorides;
+\item free sulfur dioxide;
+\item pH;
+\item alcohol
+ \end{itemize}
+ 
+ 
+ Alcohol is the only compound that as higher the level the better. All the others affect the wine flavor/quality negatively. This way it's possible to predict the rate based on the coefficients above.
+ 
+ 
+Now applying the same methodology to the PCA data set we have the following output:
+
+ 
+
+```{r, warning=FALSE, echo=FALSE, fig.cap="First and third Component plots - Some Clusters are more highlited than others."}
+data_pca<-cbind(pca$x[,1], pca$x[,2], pca$x[,3], data$quality)
+data_pca<-data.frame(data_pca)
+names(data_pca)<-c("comp1", "comp2", "comp3", "quality")
+data_pca[,4]<-as.factor(data_pca[,4])
+
+formula_text <- paste(names(data_pca[4]),"~",paste(names(data_pca[1:3]), collapse="+"))
+formula <- as.formula(formula_text)
+fit <- glm(formula,data=data_pca,family=binomial())
+summary(fit)
+
+```
+
+So Based on the table above only the the first component is relevant for the model, and as higher the value, the worse is the rating.
+
+The only problem of having the pca model is the machine learning cost, because the algorithm would have to run the PCA and then using this "new data" we would have the logistic model. When we are dealing with huge data sets this becomes expansive.
+
+
+</li></ul>
+## <a href="#toc_3">Machine Learning - 10 Cross Folder Validation</a>
+
+Now we need to run the cross validation for 10 folders. Based on the data below we can see that our model is very accurate. We have one loop with 3 prediction error over 67%
+
+But still very accurate.
+
+```{r, echo=FALSE, warning=FALSE}
+library("caret")
+set.seed(1)
+folds <- createFolds(data$quality)
+i=1
+for (f in folds){
+  train <- data[-f,] 
+  test <- data[f,]
+  fit <- lm(formula_raw, data=train) 
+  test$scores <- predict(fit, type="response", 
+                      newdata=test)
+  pred<-abs((round(test$scores)-test$quality)/test$quality)
+
+  pred_table<-table(round(pred,2))
+  print(paste("Prediction Table for validation", i))
+  print(pred_table)
+
+  #confusion matrix using 90% accuracy
+  c<-table(factor(round(test$scores),levels=3:8), test$quality)
+  print(paste("Confusion Matrix for validation", i))
+  print(c)
+  i=i+1
+  }
+
+
+
+```
+
+</li></ul>
+# <a href="#toc_3">Comparison to other models</a>
+
+One of the final goals of this project is to compare with other models, in this case.
+
+Comparing the methodology and the results in this document to the reference it's possible to see very similar results considering 90% accuracy since the methodology is the same. These are the main similarities and discrepancies from the model proposed here and the author methodology:
+
+\begin{itemize}
+
+\item in the reference the authors apply different fitting criteria in order to consider the data well fitted (p. 25). In this project it's showed only one criteria which is 90% accuracy. Maybe if it was considered another criteria we'd have a different conclusion.
+\item the authors applied 20 runs of a 5 cross folder validation, while in this project we have only 1 run for 10 cross folder validation. This could be affect the results since it's not as confused as it should be.
+\item the authors ignored grades 3 and 9 since they were very rare within the data set. This was a very good approached since the rates 9 and 3 hurt the model results being to hard to predict.
+
+ \end{itemize}
+
+ </li> </ul>
+# <a href="#toc_3">Conclusion</a>
+
+
+Based on the methodology applied above we can infer that the relevant compounds to predict the wine rates are:
+
+\begin{itemize}
+
+\item volatility acidity having a negative effect;
+\item chlorides having a negative effect;
+\item free sulfur dioxide having a negative effect;
+\item pH having a negative effect;
+\item alcohol having a positive effect
+ \end{itemize}
+ 
+The Logistic Model predicts with an error lower than 25% 95% of the times that we ran the algorithm.
+
+The rate is most common to be misplaced is 5 because the variability of the compounds is too high to have a distinct group.
+
+The computational cost for the algorithm is relatively low making possible the automation and deployment into a quality assurance process.
+
+
+
+</li></ul>
+
+# <a href="#toc_3">References</a>
+
+\begin{thebibliography}{1}
+\bibitem{so2} Gawel Richard (Uknown period). Retrieved from \url{http://www.aromadictionary.com/articles/sulfurdioxide_article.html}
+
+\bibitem{pca} Johnson and Wichern. (pag. 459 - 462) Retrieved from {\em Applied Multivariate Statistical Analysis}
+
+\bibitem{log}Deng Kan. (1999. April 09) Retrieved from \url{https://www.cs.cmu.edu/~kdeng/thesis/logistic.pdf}
+
+\bibitem{volacit}Pandell J Alexander. (1999) Retrieved from \url{http://www.wineperspective.com/the_acidity_of_wine.htm}
+
+\bibitem{comp} Paulo Cortez, Antonio Cerdeira and Fernando Almeida. (Unknown) Retrieved from \url{http://repositorium.sdum.uminho.pt/bitstream/1822/10029/1/wine5.pdf}
+
+\end{thebibliography}
+
+
+</li></ul>
+
+
+
+# <a href="#toc_3">Appendix</a>
+
+Histogram of all Variables
+
+
+```{r, echo=FALSE,  fig.width=3, fig.height=3}
+
+#create multiples histograms
+library(knitr)
+
+for(i in 1:num_variables+1){
+  hist(data[,i], main =paste(data_names[i], "Histogram", sep = " "), xlab = paste(data_names[i], "Level", sep = " "))
+  opts_chunk$get("fig.cap = 'test'")
+}
+
+```
+
+
+
+
+
+</li></ul>
+</li></ul>
+</div>
+
+
+
+
+
+
+

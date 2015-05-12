@@ -1,0 +1,173 @@
+---
+title: "Assignment 1 - Manhattan Project"
+author: "Andresa de Andrade"
+date: "Tuesday, February 17, 2015"
+output: pdf_document
+---
+
+**Executive Summary**
+-Problem Presentation;
+
+-Data Cleaning;
+
+-Exploratory Analysis;
+
+-Statistics Methodology;
+
+-Conclusion;
+
+**Problem Presentation**
+
+Due the high demand for properties in Manhattan, the city hall wants to anticipate/predict the prices for real state in order to prevent a new crises. In this case, it's necessary to understand what are the factors that contribute the price of the properties and how significant are those factors to build the final price.
+
+In order to answer those question we will be working with the following variables:
+
+1. Building Class
+
+2. Zipcode
+
+3. Number of residential units 
+
+4. Number of commercial units
+
+5. Year that the building was built
+
+6. Sale price
+
+7. Sale date
+
+
+We will also an unique variable called id to make it easier to describe.
+
+#Cleaning Data#
+
+First it's important to mention that we removed the first rows in the excel file and converted to a csv file to be more workable in R.
+
+When we are cleaning the data, there are two options, exclude missing data and adapt/transform the missing data but keep the record in the database.
+
+In this project we'll be applying both of them, but I'll start by the first one.
+
+We will be deleting records that don't have a sale price and those that don't have a zipcode.
+
+The reason is very simple, we can't predict a value that we don't have
+
+```{r, echo=FALSE}
+raw_data<-read.csv("data_raw.csv") #loading the data into R
+
+#selecting desired variables
+
+data_1<-data.frame(raw_data$id,raw_data$BCC, raw_data$ADDRESS, raw_data$LAND_SQUARE_FEET, raw_data$building_class_atpresent, raw_data$zipcode, raw_data$RESIDENTIAL_UNITS, raw_data$COMMERCIAL_UNITS, raw_data$YEAR_BUILT, raw_data$SALE.PRICE, raw_data$SALE_DATE)
+
+#naming these variables
+names(data_1)<-c("id", "bcc", "address", "land_sq", "bcc_current", "zipcode", "residential_units", "commercial_units", "year_built", "sale_price", "sale_date")
+
+#selecting only data that has a sale price
+data_1<-data.frame(subset(data_1, sale_price>0))
+data_1<-data.frame(subset(data_1, sale_price!=""))
+data_1<-data.frame(subset(data_1, zipcode!=""))
+
+regression_data<-data.frame(data_1$sale_price,  data_1$land_sq, data_1$zipcode, data_1$residential_units, data_1$commercial_units)
+
+
+
+#tapply(price_bynei, price_bynei, summary)
+
+```
+So now we can work with our data and see if the analysis makes sense.
+
+#Exploratory Analysis#
+
+First let's see how the main statistics of this database looks like.
+The summary from R gives us the main descriptive stats.
+```{r, echo=FALSE}
+summary(data_1$sale_price)
+```
+
+The minimum value that a property was sold is 1 dollar and the maximum is 1, and the max is 1.3B which suggests that we have a heavy presence of outliers in our dataset.
+
+I'm not sure why we have the value 1 dollar as a price for a house (if it's truthful our a misspelling), but for now I'll consider as a true value.
+
+To investigate this a little further let's plot the distribution for the price.
+```{r, echo=FALSE}
+boxplot(data_1$sale_price, main = "Boxplot Price of Sale")
+
+
+```
+
+As we can see, upper outliers are very far way from the rest of the data, this might cause some issues in the model because the linear model is not the best best approach when we are dealing with extreme values. 
+
+```{r, echo=FALSE}
+hist(data_1$sale_price, main = "Histogram Price of Sale")
+```
+
+We notice that we have positive skewness in the histogram, so majority of our data is concentrated in the left part of our chart.
+
+
+We should also check the correlation for our variables to understand how the complement each other
+
+```{r, echo=FALSE}
+library(corrplot)
+corrplot(cor(regression_data), method = "ellipse")
+cor(regression_data)
+
+```
+
+The price and the the size of the property in square feet appear to have a positive correlation, in other worlds the bigger the size, more expensive the value. The same conclusion may be applied for the number of commercial and residential units in a building, more units means higher the value.
+
+
+
+
+
+
+
+#Regression Model#
+
+Our first model is a univariate model using price versus land size in square feet:
+
+```{r, echo=FALSE}
+model_ulm <-lm(sale_price~land_sq,data=data_1)
+
+summary(model_ulm)
+
+
+plot(resid(model_ulm), main = "Residual Analysis")
+```
+We have a model that has a p-value for the F test very small which suggests that model has a variance small enough to be accepted. For this model we have two coefficients, the intercept and the coefficient of land_square, and both are very small suggesting a significance to the model.
+
+In this case we have a model that looks like price = 1.56x10ˆ6 +1.53x10ˆ3(land_size)
+
+We need also check the residuals to ensure that are normaly distribuited. It's more less normal distribuited, because it has the presence of outliers.
+
+
+Now we have our multivariate model using the price as dependent variable and land size, zipcode and residential and commercial units as indenpendent variables.
+
+```{r, echo=FALSE}
+model_vlm <-lm(sale_price~land_sq+zipcode+residential_units+commercial_units,data=data_1)
+
+summary(model_vlm)
+```
+Although the multivariate model is still good in terms of 1) Model adjustiment and 2)coefficients significance we need to highlight that the Rsquare is relatively low, in other worlds the model doesn't explain  most of the variance of our data.
+
+
+#Cross Validation
+With cross validation we are also able to test our data. So for this case we are partioning the datase into 10 pieces and using a part as the training and the other as testing.
+
+```{r, echo=FALSE}
+library(lattice)
+library(caret)
+
+folds<-createFolds(data_1$sale_price)
+for (f in folds){
+  train <-data_1[-f,]
+  test <-data_1[f,]
+  model_ulm_2 <-lm(sale_price~land_sq+zipcode+residential_units+commercial_units,data=data_1)
+  
+
+  
+}
+```
+
+summary(model_ulm2)
+
+#Conclusion
+So from all of the content above we can say that land_square and neighborhood are very significant for the price of a property in Manhattan, the zipcode is related to the lower the zipcode more uptown is the neighborhood and therefore more valuable for the price.
