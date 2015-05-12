@@ -1,15 +1,34 @@
+
 ---
-title: "Inference Project Part2"
-output: pdf_document
+title: "Linear Regression"
+author: "Andresa de Andrade"
+date: "August 15, 2014"
+output:
+  pdf_document:
+    fig_caption: yes
+    keep_tex: yes
+    number_sections: yes
+    toc: yes
+    
+  html_document:
+    fig_caption: yes
+    bibliography: bibliography.bib
 ---
 
-#Summary of the data:
+<div id="toc">
+<ul><li>
+\newpage 
+
+# <a href="#toc_1">Summary of the data</a>
+
 
 We'll be working with 60 observations of 10 guinea pigs. In this project we are interested to know if there's difference in length of the teeth for different levels of vitamin C and 2 deliver methods: orange juice and ascorbic acid.
 
+</li></ul>
+<ul> <li>
 
-#Exploratory analyse:
 
+# <a href="#toc_1">Exploratory Analysis</a>
 
 ```{r, echo=FALSE}
 vc_05<- subset(ToothGrowth , supp == "VC" & dose=="0.5", select=c(len))
@@ -29,7 +48,55 @@ dose_05<- subset(ToothGrowth , dose=="0.5", select=c(len))
 
 ```
 
-We need to check all the 6 combinations of data (by supplement and by dose)
+We need to check  the 6 combinations of data (by supplement and by dose)
+
+```{r, echo=FALSE}
+
+#function to filter the dataset
+filter_data<-function(dose_filter=NULL, sup_filter=NULL){
+  
+  #if both args are being passed we should filter them out
+  if(!missing(dose_filter) && !missing(sup_filter)){
+    filtered_data<-subset(ToothGrowth, dose==dose_filter & supp==sup_filter)
+    filtered_data<-filtered_data$len
+    #if only one of the args is being passed, we should is it
+    } else if(missing(dose_filter) && !missing(sup_filter))
+           {filtered_data<-subset(ToothGrowth, supp==sup_filter) 
+            filtered_data<-filtered_data$len
+    } else if(!missing(dose_filter) && missing(sup_filter)) 
+      
+    {filtered_data<-subset(ToothGrowth, dose==dose_filter)
+     filtered_data<-filtered_data$len
+    }else{filtered_data<-ToothGrowth$len}
+  # if the function args are not fed, we should consider no filter
+  
+  return(filtered_data)
+}
+
+
+#######################################################
+#function that create the desired vector of stats
+create_vector<-function(vector){
+  s.len<-as.character(length(vector))
+  s.mean<-trunc(mean(vector)*100)/100
+  s.stdev<-trunc(sd(vector)*100)/100
+  s.min<-trunc(min(vector)*100)/100
+  s.max<-trunc(max(vector)*100)/100
+  
+  s.vector<-c(s.len, s.mean, s.stdev, s.min, s.max)
+  return(s.vector)
+}
+
+
+all<-create_vector(filter_data())
+orange.juice<-create_vector(filter_data(,"VC"))
+ascorbic.acid<-create_vector(filter_data(,"OJ"))
+dose_0.5 <-create_vector(filter_data("0.5",))
+dose_1<-create_vector(filter_data("1",))
+dose_2<-create_vector(filter_data("2",))
+
+stats_table<-rbind(all, orange.juice, ascorbic.acid, dose_0.5, dose_1, dose_2)
+```
 
 Please consider Ascorbic Acid as VC and Orange Juice as OJ
 \begin{table}[!htbp] \centering 
@@ -73,8 +140,13 @@ OJ-dose = 2   & 10 & 26.060 & 2.655 & 22.40 & 30.900 \\
 - And when check the combination between type of supplement and vitamin C doses, we have, again, a better performance of Orange Juice. For the first dose orange juice means is 60% higher than VC and Sd is 60% lower than VC (the lower the sd the better). Even though for dose =2 we have a higher average for VC, the variance is almost twice as for the orange juice, what suggests outliers or the data is more disperse around the mean as we can see in the boxplot.
 
  - Normality Assumption : from the Figure 1, we can't really infer that we have a normal distribution because the presence of outliers is very strong in this model. Thus for tests purposes, we'll be using the T-student distribution.
- 
-#Statistics Tests
+
+</li></ul>
+<ul> <li>
+
+
+# <a href="#toc_1">Statistics Tests</a>
+
 
 Now that we have an idea of how data is distributed, lets check if we can confirm with a statistic test. This is the test that we'll be applying:
 
@@ -99,8 +171,12 @@ Now to check if there's difference between treatment at dose = 1 and at dose = 2
 
  
 \newpage
+</li></ul>
+<ul> <li>
 
-#Appendix
+
+# <a href="#toc_1">#Appendix</a>
+
 
 Figure 1
 
@@ -130,18 +206,18 @@ legend(2-0.3, 20, c("Ascorbic acid", "Orange juice"),
 
 
 ```{r, echo=FALSE, fig.height=4}
-boxplot(len ~ dose, data = ToothGrowth,
-        boxwex = 0.25, at = 1:8 - 0.2,
-        subset = supp == "VC", col = "green",
-        main = "Figure 3. Guinea Pigs' Tooth Growth",
-        xlab = "Vitamin C dose mg",
-        ylab = "tooth length",
-        xlim = c(0.5, 3.5), ylim = c(0, 35), yaxs = "i")
-boxplot(len ~ dose, data = ToothGrowth, add = TRUE,
-        boxwex = 0.25, at = 1:3 + 0.2,
-        subset = supp == "OJ", col = "red")
-legend(2+0.25, 13, c("Ascorbic acid", "Orange juice"),
-       fill = c("green", "red"))
+#boxplot(len ~ dose, data = ToothGrowth,
+ #       boxwex = 0.25, at = 1:8 - 0.2,
+  #      subset = supp == "VC", col = "green",
+   #     main = "Figure 3. Guinea Pigs' Tooth Growth",
+    #    xlab = "Vitamin C dose mg",
+     #   ylab = "tooth length",
+      #  xlim = c(0.5, 3.5), ylim = c(0, 35), yaxs = "i")
+#boxplot(len ~ dose, data = ToothGrowth, add = TRUE,
+ #       boxwex = 0.25, at = 1:3 + 0.2,
+  #      subset = supp == "OJ", col = "red")
+#legend(2+0.25, 13, c("Ascorbic acid", "Orange juice"),
+ #      fill = c("green", "red"))
 ```
 
 
@@ -192,3 +268,8 @@ Figure 10 - Dose: 2 Orange Juice x Ascorbic Acid
 ```{r, echo=FALSE}
 t.test(vc_2$len, oj_2$len)
 ```
+
+
+</li></ul>
+</li></ul>
+</div>
