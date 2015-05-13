@@ -91,11 +91,25 @@ create_vector<-function(vector){
 all<-create_vector(filter_data())
 orange.juice<-create_vector(filter_data(,"VC"))
 ascorbic.acid<-create_vector(filter_data(,"OJ"))
-dose_0.5 <-create_vector(filter_data("0.5",))
-dose_1<-create_vector(filter_data("1",))
-dose_2<-create_vector(filter_data("2",))
+dose1_0.5 <-create_vector(filter_data("0.5",))
+dose1_1<-create_vector(filter_data("1",))
+dose1_2<-create_vector(filter_data("2",))
 
-stats_table<-rbind(all, orange.juice, ascorbic.acid, dose_0.5, dose_1, dose_2)
+vc_dose1_0.5<-create_vector(filter_data("0.5","VC"))
+vc_dose1_1<-create_vector(filter_data("1","VC"))
+vc_dose1_2<-create_vector(filter_data("2","VC"))
+
+oj_dose1_0.5<-create_vector(filter_data("0.5","VC"))
+oj_dose1_1<-create_vector(filter_data("1","VC"))
+oj_dose1_2<-create_vector(filter_data("2","VC"))
+
+stats_table<-rbind(all, orange.juice, ascorbic.acid, dose1_0.5, dose1_1, dose1_2, vc_dose1_0.5, vc_dose1_1, vc_dose1_2, oj_dose1_0.5, oj_dose1_1, oj_dose1_2)
+
+row.names(stats_table)<-c("ToothGrowth", "Orange Juice", "Ascorbic Acid", "Dose = 0.5", "Dose = 1", "Dose = 2" , "VC Dose  = 0.5", "VC Dose = 1", "VC Dose =2", "OJ Dose = 0.5", "OJ Dose = 1", "OJ Dose =2")
+colnames(stats_table)<-c("N", "Mean", "St. Dev", "Min", "Max")
+library("pander")
+pander(stats_table)
+#knitr::kable(stats_table, caption = "Summary Table")
 ```
 
 Please consider Ascorbic Acid as VC and Orange Juice as OJ
@@ -235,13 +249,14 @@ t.test(vc_subset$len, oj_subset$len)
  Figure 5 - Dose: 0.5 x 1 
  
 ```{r, echo=FALSE, fig.height=3}
+head(dose_1$len)
 t.test(dose_05$len, dose_1$len)
 ``` 
 
 Figure 6 - Dose: 0.5 x 2
   
 ```{r, echo=FALSE}
-t.test(dose_05$len, dose_2$len)
+#t.test(dose_05$len, dose_2$len)
 ```
 Figure 7 - Dose: 1 x 2
   
