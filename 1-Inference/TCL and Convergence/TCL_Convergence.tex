@@ -139,7 +139,7 @@ and compare to the theoretical center
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 5.009134
+## [1] 4.996074
 \end{verbatim}
 
 Meanwhile, the expected value for mean is 1/lambda = 5.
@@ -152,11 +152,18 @@ Meanwhile, the expected value for mean is 1/lambda = 5.
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 0.7948422
+## [1] 0.7900941
 \end{verbatim}
 
 The expected Standard Deviation is
 \{{[}1/(lambda)\^{}(2){]}/n\}\^{}(0.5)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{std<-((}\DecValTok{1}\NormalTok{/lambda)/}\KeywordTok{sqrt}\NormalTok{(}\DecValTok{40}\NormalTok{))}
+\NormalTok{std}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{verbatim}
 ## [1] 0.7905694
@@ -179,8 +186,14 @@ converges to a normal.
 4- As 1/lambda is the mean for this distribution we have that at 95\% of
 confidence the mean is in this interval:
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{mean}\NormalTok{(list_of_exponential) +}\StringTok{ }\KeywordTok{c}\NormalTok{(-}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{)*}\FloatTok{1.96}\NormalTok{*}\KeywordTok{sd}\NormalTok{(list_of_exponential)/}\KeywordTok{sqrt}\NormalTok{(}\KeywordTok{nrow}\NormalTok{(list_of_exponential))}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{verbatim}
-## [1] 4.993555 5.024713
+## [1] 4.980588 5.011559
 \end{verbatim}
 
 \section{Conclusion}\label{conclusion}
@@ -193,11 +206,28 @@ converges to the distribution mean.
 
 \section{Appendix}\label{appendix}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+    \KeywordTok{hist}\NormalTok{(list_of_exponential, }\DataTypeTok{freq=} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{col =} \StringTok{"blue"}\NormalTok{, }\DataTypeTok{main =} \StringTok{"Histogram of simulated mean"}\NormalTok{, }\DataTypeTok{xlab =} \StringTok{"mean of exponential"}\NormalTok{)}
+    \KeywordTok{curve}\NormalTok{(}\KeywordTok{dnorm}\NormalTok{(x, }\DataTypeTok{mean=}\DecValTok{5}\NormalTok{, }\DataTypeTok{sd=}\NormalTok{std), }
+          \DataTypeTok{col=}\StringTok{"red"}\NormalTok{, }\DataTypeTok{lwd=}\DecValTok{2}\NormalTok{, }\DataTypeTok{add=}\OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{figure}[htbp]
 \centering
 \includegraphics{TCL_Convergence_files/figure-latex/unnamed-chunk-6-1.pdf}
 \caption{Histogram of Simulated Mean}
 \end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{x<-}\KeywordTok{rnorm}\NormalTok{(}\DecValTok{1000}\NormalTok{,}\DecValTok{5}\NormalTok{, std) }
+\KeywordTok{hist}\NormalTok{(x, }\DataTypeTok{freq=} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{col =} \StringTok{"green"}\NormalTok{,}\DataTypeTok{main =} \StringTok{"Histogram of normal with mean(5,0.7906)"}\NormalTok{)}
+\KeywordTok{curve}\NormalTok{(}\KeywordTok{dnorm}\NormalTok{(x, }\DataTypeTok{mean=}\DecValTok{5}\NormalTok{, }\DataTypeTok{sd=}\NormalTok{std), }
+          \DataTypeTok{col=}\StringTok{"red"}\NormalTok{, }\DataTypeTok{lwd=}\DecValTok{2}\NormalTok{, }\DataTypeTok{add=}\OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{figure}[htbp]
 \centering
