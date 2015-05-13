@@ -9,10 +9,9 @@ output:
     keep_tex: yes
     number_sections: yes
     toc: yes
-    
   html_document:
-    fig_caption: yes
     bibliography: bibliography.bib
+    fig_caption: yes
 ---
 
 
@@ -47,7 +46,7 @@ The motivation of this project is to predict the quality of the wine based on th
 
 # <a href="#toc_1">Exploratory Analysis</a>
 
-```{r, echo=FALSE}
+```{r}
 #reading data
 data<-read.csv("winequality-red.csv", sep=";")
 
@@ -85,7 +84,7 @@ This is how the output variable behaviors:
 \newpage
 
 
-```{r, echo=FALSE, fig.keep='first', fig.cap="Histogram of Quality of Wine", fig.height=3, fig.width=5}
+```{r fig.keep='first', fig.cap="Histogram of Quality of Wine", fig.height=3, fig.width=5}
 hist(data$quality, main = "Wine Ratings", xlab= "Rates", freq=F)
 ```  
 
@@ -106,7 +105,7 @@ In the data set there are two variables dedicated to SO~2~, one is called free s
 This is a good example of a pair of variable that might be correlated and could be aggregate in a single one.
 
 
-```{r, echo=FALSE, fig.cap="Box plot of Level of Sulfur Dioxide by rating", fig.height=4, fig.width=5}
+```{r, fig.cap="Box plot of Level of Sulfur Dioxide by rating", fig.height=4, fig.width=5}
 
 #function that calculate the boxplot by rate for an specific variable using column name as arg
 byrate_hist<-function(x, label){
@@ -136,7 +135,7 @@ byrate_hist("total.sulfur.dioxide", "Total level of So2")
 
 
 
-```{r, warning=FALSE, echo=FALSE}
+```{r, warning=FALSE}
 #function that creates the summary table for a specific variable using index as arg
 library(knitr)
 create_summary_table<-function (x) {
@@ -162,7 +161,7 @@ Combining the Figure 2 and the Table 1 we can see that the range level of So~2~ 
 From the correlation table it's also possible to see that Volatile Acidity is significant for the sensorial analysis of the wine.
 
 
-```{r, echo=FALSE, fig.cap="Level of Volatile Acidity", fig.height=4, fig.width=5}
+```{r,  fig.cap="Level of Volatile Acidity", fig.height=4, fig.width=5}
 byrate_hist("volatile.acidity", "Volatile Acidity")
 
 ```
@@ -172,7 +171,7 @@ byrate_hist("volatile.acidity", "Volatile Acidity")
 From Figure 2 and Table 2 it's possible to infer that the level of alcohol has a negative correlation to the wine rates, in another words, the lower the vol acidity the higher the rates.
 
 
-```{r, echo=FALSE}
+```{r}
 summary_table_alc<-create_summary_table(2)
 names(summary_table_alc)<-c("Rates", "Mean", "Median", "Min", "Max", "Standard Deviation")
 knitr::kable(summary_table_alc, caption = "Vol Acidity Summary")
@@ -185,7 +184,7 @@ knitr::kable(summary_table_alc, caption = "Vol Acidity Summary")
 From the appendix section the other relevant substance is alcohol, the graphic and table below describe the distribution of level of alcohol for different rates
 
 \newpage
-```{r, echo=FALSE, fig.cap="Total Level of alcohol"}
+```{r fig.cap="Total Level of alcohol"}
 byrate_hist("alcohol", "Total level of Alcohol")
 
 ```
@@ -193,7 +192,7 @@ byrate_hist("alcohol", "Total level of Alcohol")
 From Figure 3 and Table 3 it's possible to infer that the level of alcohol has a positive effect in the wine quality.
 
 
-```{r, echo=FALSE}
+```{r}
 
 summary_table_alc<-create_summary_table(11)
 names(summary_table_alc)<-c("Rates", "Mean", "Median", "Min", "Max", "Standard Deviation")
@@ -223,7 +222,7 @@ At this point, it's important to highlight that having a high correlation doesn'
 #plot(data)
 ```
 
-```{r, echo=FALSE}
+```{r}
 table_cor<-cor(data)
 table_cor<-data.frame(table_cor)
 names_cor<-c("Acid", "Vol.Acid", "Citr.Acid", "Sugar", "Chlor", "FreeSO2", "TotalSo2", "Den", "pH", "Sulph", "Alchool", "Qlity")
@@ -244,7 +243,7 @@ The application of Principal Component only depends on the data covariance (or c
 The graphic below shows the main components for the explanation of the variance. The table is built to carry the heaviest proportion of the variance in the first components.
 
 
-```{r, echo=FALSE, fig.width=3.5, fig.height=3.5, fig.cap = "Proportion of Variance Explained by Principal Component"}
+```{r,  fig.width=3.5, fig.height=3.5, fig.cap = "Proportion of Variance Explained by Principal Component"}
 pca <- prcomp(data[,1:11])
 plot(pca, type ="l", main = "Principal Component Analysis")
 
@@ -253,7 +252,7 @@ plot(pca, type ="l", main = "Principal Component Analysis")
 
 
 
-```{r, echo=FALSE}
+```{r}
 summary_pca<-summary(pca)
 
 percent <- function(x, digits = 2, format = "f", ...) {
@@ -279,7 +278,7 @@ The criteria to evaluate a good model is around 80 being good and greater than 9
 Besides reducing the number of variables for the model, the component also highlights any particular evidence for clusters.
 
 
-```{r, echo=FALSE}
+```{r}
 eigenvalues<-round(pca$sdev,2)
 names<-data_names[1:11]
 eigenvalues<-cbind(names, eigenvalues)
@@ -296,7 +295,7 @@ Alcohol, Sulfate and Density for example are substances that are important to th
 
 Plotting the first two components we have the following graph:
 
-```{r, warning=FALSE, echo=FALSE, fig.cap="First and third Component plots - Some Clusters are more highlited than others."}
+```{r, warning=FALSE,  fig.cap="First and third Component plots - Some Clusters are more highlited than others."}
 library(lattice)
 library(directlabels)
 
@@ -316,7 +315,7 @@ The classification methodology that we'll be using in this document is the Logis
 
 
 
-```{r, warning=FALSE, echo=FALSE, fig.cap="First and third Component plots - Some Clusters are more highlited than others."}
+```{r, warning=FALSE, fig.cap="First and third Component plots - Some Clusters are more highlited than others."}
 data_2<-data
 data_2[,12]<-as.factor(data_2[,12])
 
@@ -345,7 +344,7 @@ Now applying the same methodology to the PCA data set we have the following outp
 
  
 
-```{r, warning=FALSE, echo=FALSE, fig.cap="First and third Component plots - Some Clusters are more highlited than others."}
+```{r, warning=FALSE,  fig.cap="First and third Component plots - Some Clusters are more highlited than others."}
 data_pca<-cbind(pca$x[,1], pca$x[,2], pca$x[,3], data$quality)
 data_pca<-data.frame(data_pca)
 names(data_pca)<-c("comp1", "comp2", "comp3", "quality")
@@ -370,7 +369,7 @@ Now we need to run the cross validation for 10 folders. Based on the data below 
 
 But still very accurate.
 
-```{r, echo=FALSE, warning=FALSE}
+```{r warning=FALSE}
 library("caret")
 set.seed(1)
 folds <- createFolds(data$quality)

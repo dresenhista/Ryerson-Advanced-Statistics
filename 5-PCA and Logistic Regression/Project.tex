@@ -1,12 +1,10 @@
 \documentclass[]{article}
-\usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
 \usepackage{fixltx2e} % provides \textsubscript
-% use upquote if available, for straight quotes in verbatim environments
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
 \else % if luatex or xelatex
   \ifxetex
@@ -18,29 +16,47 @@
   \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
   \newcommand{\euro}{€}
 \fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 % use microtype if available
-\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
 \usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{{#1}}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{{#1}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{{#1}}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\RegionMarkerTok}[1]{{#1}}
+\newcommand{\ErrorTok}[1]{\textbf{{#1}}}
+\newcommand{\NormalTok}[1]{{#1}}
 \usepackage{longtable,booktabs}
 \usepackage{graphicx}
-% Redefine \includegraphics so that, unless explicit options are
-% given, the image width will not exceed the width of the page.
-% Images get their normal width if they fit onto the page, but
-% are scaled down if they would overflow the margins.
 \makeatletter
-\def\ScaleIfNeeded{%
-  \ifdim\Gin@nat@width>\linewidth
-    \linewidth
-  \else
-    \Gin@nat@width
-  \fi
-}
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
 \makeatother
-\let\Oldincludegraphics\includegraphics
-{%
- \catcode`\@=11\relax%
- \gdef\includegraphics{\@ifnextchar[{\Oldincludegraphics}{\Oldincludegraphics[width=\ScaleIfNeeded]}}%
-}%
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 \ifxetex
   \usepackage[setpagesize=false, % page size defined by xetex
               unicode=false, % unicode breaks when used with xetex
@@ -63,22 +79,29 @@
 \setlength{\emergencystretch}{3em}  % prevent overfull lines
 \setcounter{secnumdepth}{5}
 
-\title{The Wine Vinho Verde}
-\author{Andresa de Andrade}
-\date{April 2, 2015}
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+\setlength{\droptitle}{-2em}
+  \title{The Wine Vinho Verde}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{Andresa de Andrade}
+  \preauthor{\centering\large\emph}
+  \postauthor{\par}
+  \predate{\centering\large\emph}
+  \postdate{\par}
+  \date{April 2, 2015}
+
+
+
 
 \begin{document}
 
-\begin{center}
-\huge The Wine Vinho Verde \\[0.2cm]
-\end{center}
-\begin{center}
-\large \emph{Andresa de Andrade}\\[0.1cm]
-\end{center}
-\begin{center}
-\large \emph{April 2, 2015} \\
-\end{center}
-\normalsize
+\maketitle
 
 
 {
@@ -86,6 +109,7 @@
 \setcounter{tocdepth}{2}
 \tableofcontents
 }
+\hyperdef{}{toc}{}
 \newpage 
 
 \section{Problem Introduction}\label{problem-introduction}
@@ -128,6 +152,31 @@ one methodology will be tested for learning purposes.
 
 \section{Exploratory Analysis}\label{exploratory-analysis}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#reading data}
+\NormalTok{data<-}\KeywordTok{read.csv}\NormalTok{(}\StringTok{"winequality-red.csv"}\NormalTok{, }\DataTypeTok{sep=}\StringTok{";"}\NormalTok{)}
+
+
+\CommentTok{#Treating data names to look preety in our charts/analysis}
+
+\NormalTok{data_names<-}\KeywordTok{names}\NormalTok{(data)}
+
+\NormalTok{simpleCap <-}\StringTok{ }\NormalTok{function(x) \{}
+
+  \NormalTok{s <-}\StringTok{ }\KeywordTok{strsplit}\NormalTok{(x, }\StringTok{" "}\NormalTok{)[[}\DecValTok{1}\NormalTok{]]}
+  \KeywordTok{paste}\NormalTok{(}\KeywordTok{toupper}\NormalTok{(}\KeywordTok{substring}\NormalTok{(s, }\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{)), }\KeywordTok{substring}\NormalTok{(s, }\DecValTok{2}\NormalTok{),}
+        \DataTypeTok{sep=}\StringTok{""}\NormalTok{, }\DataTypeTok{collapse=}\StringTok{" "}\NormalTok{)}
+\NormalTok{\}}
+
+\NormalTok{data_names<-}\KeywordTok{as.vector}\NormalTok{(}\KeywordTok{sapply}\NormalTok{(data_names, gsub, }\DataTypeTok{pattern=}\StringTok{"[.]"}\NormalTok{, }\DataTypeTok{replacement =} \StringTok{" "}\NormalTok{))}
+\NormalTok{data_names<-}\KeywordTok{as.vector}\NormalTok{(}\KeywordTok{sapply}\NormalTok{(data_names, simpleCap))}
+\NormalTok{#####################}
+
+\NormalTok{num_variables =}\StringTok{ }\KeywordTok{length}\NormalTok{(data)-}\DecValTok{1}
+\end{Highlighting}
+\end{Shaded}
+
 It's interesting to understand if the data set has any outliers or even
 missing information. Because, if positive, it'd be necessary some
 treatment prior to the data exploration.
@@ -140,9 +189,15 @@ document.
 
 This is how the output variable behaviors: \newpage
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{hist}\NormalTok{(data$quality, }\DataTypeTok{main =} \StringTok{"Wine Ratings"}\NormalTok{, }\DataTypeTok{xlab=} \StringTok{"Rates"}\NormalTok{, }\DataTypeTok{freq=}\NormalTok{F)}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{figure}[htbp]
 \centering
-\includegraphics{./Project_files/figure-latex/unnamed-chunk-2-1.pdf}
+\includegraphics{Project_files/figure-latex/unnamed-chunk-2-1.pdf}
 \caption{Histogram of Quality of Wine}
 \end{figure}
 
@@ -174,32 +229,77 @@ added.
 This is a good example of a pair of variable that might be correlated
 and could be aggregate in a single one.
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#function that calculate the boxplot by rate for an specific variable using column name as arg}
+\NormalTok{byrate_hist<-function(x, label)\{}
+  \NormalTok{boxplot_string =}\StringTok{ ""}
+  \NormalTok{x_label<-}\KeywordTok{array}\NormalTok{()}
+  
+  \NormalTok{for(grade in }\DecValTok{1}\NormalTok{:}\DecValTok{10}\NormalTok{)\{}
+    \NormalTok{first_graph<-}\KeywordTok{paste}\NormalTok{(}\StringTok{"data[data$quality=="}\NormalTok{,grade, }\StringTok{",]$"}\NormalTok{,x)}
+    \NormalTok{boxplot_string =}\StringTok{ }\KeywordTok{paste}\NormalTok{(boxplot_string, first_graph, }\StringTok{","}\NormalTok{)}
+    \NormalTok{x_label[grade]<-}\KeywordTok{paste}\NormalTok{(}\StringTok{"rate"}\NormalTok{, grade)}
+  \NormalTok{\}}
+  \NormalTok{first_string <-}\KeywordTok{paste}\NormalTok{(boxplot_string, }\StringTok{"main = '"}\NormalTok{, label, }\StringTok{"by Wine Rates'"}\NormalTok{)}
+  
+  \NormalTok{lim_sup<-}\KeywordTok{eval}\NormalTok{(}\KeywordTok{parse}\NormalTok{(}\DataTypeTok{text =} \KeywordTok{paste}\NormalTok{(}\StringTok{"max(data$"}\NormalTok{, x,}\StringTok{")*1.05"}\NormalTok{)))}
+  \NormalTok{lim_inf<-}\KeywordTok{eval}\NormalTok{(}\KeywordTok{parse}\NormalTok{(}\DataTypeTok{text =} \KeywordTok{paste}\NormalTok{(}\StringTok{"min(data$"}\NormalTok{, x,}\StringTok{")*0.95"}\NormalTok{)))}
+  
+  \NormalTok{second_string =}\StringTok{ }\KeywordTok{paste}\NormalTok{(}\StringTok{"boxplot("}\NormalTok{, first_string, }\StringTok{", ylim=c("}\NormalTok{, lim_inf, }\StringTok{","}\NormalTok{, lim_sup,}\StringTok{"), xlim=c(2.5,8.5))"}\NormalTok{)}
+  
+  \NormalTok{test<-}\KeywordTok{eval}\NormalTok{(}\KeywordTok{parse}\NormalTok{(}\DataTypeTok{text =}\NormalTok{second_string))}
+  \KeywordTok{axis}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{:}\DecValTok{10}\NormalTok{,x_label)}
+  
+\NormalTok{\}}
+
+\KeywordTok{byrate_hist}\NormalTok{(}\StringTok{"total.sulfur.dioxide"}\NormalTok{, }\StringTok{"Total level of So2"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{figure}[htbp]
 \centering
-\includegraphics{./Project_files/figure-latex/unnamed-chunk-3-1.pdf}
+\includegraphics{Project_files/figure-latex/unnamed-chunk-3-1.pdf}
 \caption{Box plot of Level of Sulfur Dioxide by rating}
 \end{figure}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#function that creates the summary table for a specific variable using index as arg}
+\KeywordTok{library}\NormalTok{(knitr)}
+\NormalTok{create_summary_table<-function (x) \{}
+  \NormalTok{median_alc<-}\KeywordTok{aggregate}\NormalTok{(data[,x], }\KeywordTok{list}\NormalTok{(data$quality), median)}
+  \NormalTok{mean_alc<-}\KeywordTok{aggregate}\NormalTok{(data[,x], }\KeywordTok{list}\NormalTok{(data$quality), mean)}
+  \NormalTok{min_alc<-}\KeywordTok{aggregate}\NormalTok{(data[,x], }\KeywordTok{list}\NormalTok{(data$quality), min)}
+  \NormalTok{max_alc<-}\KeywordTok{aggregate}\NormalTok{(data[,x], }\KeywordTok{list}\NormalTok{(data$quality), max)}
+  \NormalTok{sd_alc<-}\KeywordTok{aggregate}\NormalTok{(data[,x], }\KeywordTok{list}\NormalTok{(data$quality), sd)}
+  \NormalTok{summary_table<-}\KeywordTok{data.frame}\NormalTok{(median_alc, mean_alc[,}\DecValTok{2}\NormalTok{], min_alc[,}\DecValTok{2}\NormalTok{], max_alc[,}\DecValTok{2}\NormalTok{], sd_alc[,}\DecValTok{2}\NormalTok{])}
+  \KeywordTok{return}\NormalTok{(summary_table)}
+\NormalTok{\}}
+
+\NormalTok{summary_table<-}\KeywordTok{create_summary_table}\NormalTok{(}\DecValTok{7}\NormalTok{)}
+\KeywordTok{names}\NormalTok{(summary_table)<-}\KeywordTok{c}\NormalTok{(}\StringTok{"Rates"}\NormalTok{, }\StringTok{"Mean"}\NormalTok{, }\StringTok{"Median"}\NormalTok{, }\StringTok{"Min"}\NormalTok{, }\StringTok{"Max"}\NormalTok{, }\StringTok{"Standard Deviation"}\NormalTok{)}
+\NormalTok{knitr::}\KeywordTok{kable}\NormalTok{(summary_table, }\DataTypeTok{caption =} \StringTok{"Total Sulfur Dioxide Summary"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{longtable}[c]{@{}rrrrrr@{}}
-\toprule\addlinespace
-Rates & Mean & Median & Min & Max & Standard Deviation
-\\\addlinespace
-\midrule\endhead
-3 & 15.0 & 24.90000 & 9 & 49 & 16.82888
-\\\addlinespace
-4 & 26.0 & 36.24528 & 7 & 119 & 27.58337
-\\\addlinespace
-5 & 47.0 & 56.51395 & 6 & 155 & 36.99312
-\\\addlinespace
-6 & 35.0 & 40.86991 & 6 & 165 & 25.03825
-\\\addlinespace
-7 & 27.0 & 35.02010 & 7 & 289 & 33.19121
-\\\addlinespace
-8 & 21.5 & 33.44444 & 12 & 88 & 25.43324
-\\\addlinespace
+\caption{Total Sulfur Dioxide Summary}\tabularnewline
+\toprule
+Rates & Mean & Median & Min & Max & Standard Deviation\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+Rates & Mean & Median & Min & Max & Standard Deviation\tabularnewline
+\midrule
+\endhead
+3 & 15.0 & 24.90000 & 9 & 49 & 16.82888\tabularnewline
+4 & 26.0 & 36.24528 & 7 & 119 & 27.58337\tabularnewline
+5 & 47.0 & 56.51395 & 6 & 155 & 36.99312\tabularnewline
+6 & 35.0 & 40.86991 & 6 & 165 & 25.03825\tabularnewline
+7 & 27.0 & 35.02010 & 7 & 289 & 33.19121\tabularnewline
+8 & 21.5 & 33.44444 & 12 & 88 & 25.43324\tabularnewline
 \bottomrule
-\addlinespace
-\caption{Total Sulfur Dioxide Summary}
 \end{longtable}
 
 Combining the Figure 2 and the Table 1 we can see that the range level
@@ -211,9 +311,15 @@ having high rates.
 From the correlation table it's also possible to see that Volatile
 Acidity is significant for the sensorial analysis of the wine.
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{byrate_hist}\NormalTok{(}\StringTok{"volatile.acidity"}\NormalTok{, }\StringTok{"Volatile Acidity"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{figure}[htbp]
 \centering
-\includegraphics{./Project_files/figure-latex/unnamed-chunk-5-1.pdf}
+\includegraphics{Project_files/figure-latex/unnamed-chunk-5-1.pdf}
 \caption{Level of Volatile Acidity}
 \end{figure}
 
@@ -223,26 +329,31 @@ From Figure 2 and Table 2 it's possible to infer that the level of
 alcohol has a negative correlation to the wine rates, in another words,
 the lower the vol acidity the higher the rates.
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{summary_table_alc<-}\KeywordTok{create_summary_table}\NormalTok{(}\DecValTok{2}\NormalTok{)}
+\KeywordTok{names}\NormalTok{(summary_table_alc)<-}\KeywordTok{c}\NormalTok{(}\StringTok{"Rates"}\NormalTok{, }\StringTok{"Mean"}\NormalTok{, }\StringTok{"Median"}\NormalTok{, }\StringTok{"Min"}\NormalTok{, }\StringTok{"Max"}\NormalTok{, }\StringTok{"Standard Deviation"}\NormalTok{)}
+\NormalTok{knitr::}\KeywordTok{kable}\NormalTok{(summary_table_alc, }\DataTypeTok{caption =} \StringTok{"Vol Acidity Summary"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{longtable}[c]{@{}rrrrrr@{}}
-\toprule\addlinespace
-Rates & Mean & Median & Min & Max & Standard Deviation
-\\\addlinespace
-\midrule\endhead
-3 & 0.845 & 0.8845000 & 0.44 & 1.580 & 0.3312556
-\\\addlinespace
-4 & 0.670 & 0.6939623 & 0.23 & 1.130 & 0.2201100
-\\\addlinespace
-5 & 0.580 & 0.5770411 & 0.18 & 1.330 & 0.1648012
-\\\addlinespace
-6 & 0.490 & 0.4974843 & 0.16 & 1.040 & 0.1609623
-\\\addlinespace
-7 & 0.370 & 0.4039196 & 0.12 & 0.915 & 0.1452244
-\\\addlinespace
-8 & 0.370 & 0.4233333 & 0.26 & 0.850 & 0.1449138
-\\\addlinespace
+\caption{Vol Acidity Summary}\tabularnewline
+\toprule
+Rates & Mean & Median & Min & Max & Standard Deviation\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+Rates & Mean & Median & Min & Max & Standard Deviation\tabularnewline
+\midrule
+\endhead
+3 & 0.845 & 0.8845000 & 0.44 & 1.580 & 0.3312556\tabularnewline
+4 & 0.670 & 0.6939623 & 0.23 & 1.130 & 0.2201100\tabularnewline
+5 & 0.580 & 0.5770411 & 0.18 & 1.330 & 0.1648012\tabularnewline
+6 & 0.490 & 0.4974843 & 0.16 & 1.040 & 0.1609623\tabularnewline
+7 & 0.370 & 0.4039196 & 0.12 & 0.915 & 0.1452244\tabularnewline
+8 & 0.370 & 0.4233333 & 0.26 & 0.850 & 0.1449138\tabularnewline
 \bottomrule
-\addlinespace
-\caption{Vol Acidity Summary}
 \end{longtable}
 
 \subsection{Alcohol}\label{alcohol}
@@ -252,31 +363,47 @@ graphic and table below describe the distribution of level of alcohol
 for different rates
 
 \newpage
-\includegraphics{./Project_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{byrate_hist}\NormalTok{(}\StringTok{"alcohol"}\NormalTok{, }\StringTok{"Total level of Alcohol"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{Project_files/figure-latex/unnamed-chunk-7-1.pdf}
+\caption{Total Level of alcohol}
+\end{figure}
 
 From Figure 3 and Table 3 it's possible to infer that the level of
 alcohol has a positive effect in the wine quality.
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{summary_table_alc<-}\KeywordTok{create_summary_table}\NormalTok{(}\DecValTok{11}\NormalTok{)}
+\KeywordTok{names}\NormalTok{(summary_table_alc)<-}\KeywordTok{c}\NormalTok{(}\StringTok{"Rates"}\NormalTok{, }\StringTok{"Mean"}\NormalTok{, }\StringTok{"Median"}\NormalTok{, }\StringTok{"Min"}\NormalTok{, }\StringTok{"Max"}\NormalTok{, }\StringTok{"Standard Deviation"}\NormalTok{)}
+\NormalTok{knitr::}\KeywordTok{kable}\NormalTok{(summary_table_alc, }\DataTypeTok{caption =} \StringTok{"Alcohol Summary"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{longtable}[c]{@{}rrrrrr@{}}
-\toprule\addlinespace
-Rates & Mean & Median & Min & Max & Standard Deviation
-\\\addlinespace
-\midrule\endhead
-3 & 9.925 & 9.955000 & 8.4 & 11.0 & 0.8180091
-\\\addlinespace
-4 & 10.000 & 10.265094 & 9.0 & 13.1 & 0.9347760
-\\\addlinespace
-5 & 9.700 & 9.899706 & 8.5 & 14.9 & 0.7365210
-\\\addlinespace
-6 & 10.500 & 10.629519 & 8.4 & 14.0 & 1.0496390
-\\\addlinespace
-7 & 11.500 & 11.465913 & 9.2 & 14.0 & 0.9619330
-\\\addlinespace
-8 & 12.150 & 12.094444 & 9.8 & 14.0 & 1.2240109
-\\\addlinespace
+\caption{Alcohol Summary}\tabularnewline
+\toprule
+Rates & Mean & Median & Min & Max & Standard Deviation\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+Rates & Mean & Median & Min & Max & Standard Deviation\tabularnewline
+\midrule
+\endhead
+3 & 9.925 & 9.955000 & 8.4 & 11.0 & 0.8180091\tabularnewline
+4 & 10.000 & 10.265094 & 9.0 & 13.1 & 0.9347760\tabularnewline
+5 & 9.700 & 9.899706 & 8.5 & 14.9 & 0.7365210\tabularnewline
+6 & 10.500 & 10.629519 & 8.4 & 14.0 & 1.0496390\tabularnewline
+7 & 11.500 & 11.465913 & 9.2 & 14.0 & 0.9619330\tabularnewline
+8 & 12.150 & 12.094444 & 9.8 & 14.0 & 1.2240109\tabularnewline
 \bottomrule
-\addlinespace
-\caption{Alcohol Summary}
 \end{longtable}
 
 \newpage
@@ -294,51 +421,54 @@ alcohol, and volatile acidity has a negative effect in the wine quality.
 At this point, it's important to highlight that having a high
 correlation doesn't mean having a causality.
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{table_cor<-}\KeywordTok{cor}\NormalTok{(data)}
+\NormalTok{table_cor<-}\KeywordTok{data.frame}\NormalTok{(table_cor)}
+\NormalTok{names_cor<-}\KeywordTok{c}\NormalTok{(}\StringTok{"Acid"}\NormalTok{, }\StringTok{"Vol.Acid"}\NormalTok{, }\StringTok{"Citr.Acid"}\NormalTok{, }\StringTok{"Sugar"}\NormalTok{, }\StringTok{"Chlor"}\NormalTok{, }\StringTok{"FreeSO2"}\NormalTok{, }\StringTok{"TotalSo2"}\NormalTok{, }\StringTok{"Den"}\NormalTok{, }\StringTok{"pH"}\NormalTok{, }\StringTok{"Sulph"}\NormalTok{, }\StringTok{"Alchool"}\NormalTok{, }\StringTok{"Qlity"}\NormalTok{)}
+\KeywordTok{names}\NormalTok{(table_cor)<-names_cor}
+\KeywordTok{rownames}\NormalTok{(table_cor)<-names_cor}
+\NormalTok{knitr::}\KeywordTok{kable}\NormalTok{(table_cor, }\DataTypeTok{caption =} \StringTok{"Correlation Matrix"}\NormalTok{, }\DataTypeTok{digits =} \DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{longtable}[c]{@{}lrrrrrrrrrrrr@{}}
-\toprule\addlinespace
+\caption{Correlation Matrix}\tabularnewline
+\toprule
 & Acid & Vol.Acid & Citr.Acid & Sugar & Chlor & FreeSO2 & TotalSo2 & Den
-& pH & Sulph & Alchool & Qlity
-\\\addlinespace
-\midrule\endhead
+& pH & Sulph & Alchool & Qlity\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+& Acid & Vol.Acid & Citr.Acid & Sugar & Chlor & FreeSO2 & TotalSo2 & Den
+& pH & Sulph & Alchool & Qlity\tabularnewline
+\midrule
+\endhead
 Acid & 1.00 & -0.26 & 0.67 & 0.11 & 0.09 & -0.15 & -0.11 & 0.67 & -0.68
-& 0.18 & -0.06 & 0.12
-\\\addlinespace
+& 0.18 & -0.06 & 0.12\tabularnewline
 Vol.Acid & -0.26 & 1.00 & -0.55 & 0.00 & 0.06 & -0.01 & 0.08 & 0.02 &
-0.23 & -0.26 & -0.20 & -0.39
-\\\addlinespace
+0.23 & -0.26 & -0.20 & -0.39\tabularnewline
 Citr.Acid & 0.67 & -0.55 & 1.00 & 0.14 & 0.20 & -0.06 & 0.04 & 0.36 &
--0.54 & 0.31 & 0.11 & 0.23
-\\\addlinespace
+-0.54 & 0.31 & 0.11 & 0.23\tabularnewline
 Sugar & 0.11 & 0.00 & 0.14 & 1.00 & 0.06 & 0.19 & 0.20 & 0.36 & -0.09 &
-0.01 & 0.04 & 0.01
-\\\addlinespace
+0.01 & 0.04 & 0.01\tabularnewline
 Chlor & 0.09 & 0.06 & 0.20 & 0.06 & 1.00 & 0.01 & 0.05 & 0.20 & -0.27 &
-0.37 & -0.22 & -0.13
-\\\addlinespace
+0.37 & -0.22 & -0.13\tabularnewline
 FreeSO2 & -0.15 & -0.01 & -0.06 & 0.19 & 0.01 & 1.00 & 0.67 & -0.02 &
-0.07 & 0.05 & -0.07 & -0.05
-\\\addlinespace
+0.07 & 0.05 & -0.07 & -0.05\tabularnewline
 TotalSo2 & -0.11 & 0.08 & 0.04 & 0.20 & 0.05 & 0.67 & 1.00 & 0.07 &
--0.07 & 0.04 & -0.21 & -0.19
-\\\addlinespace
+-0.07 & 0.04 & -0.21 & -0.19\tabularnewline
 Den & 0.67 & 0.02 & 0.36 & 0.36 & 0.20 & -0.02 & 0.07 & 1.00 & -0.34 &
-0.15 & -0.50 & -0.17
-\\\addlinespace
+0.15 & -0.50 & -0.17\tabularnewline
 pH & -0.68 & 0.23 & -0.54 & -0.09 & -0.27 & 0.07 & -0.07 & -0.34 & 1.00
-& -0.20 & 0.21 & -0.06
-\\\addlinespace
+& -0.20 & 0.21 & -0.06\tabularnewline
 Sulph & 0.18 & -0.26 & 0.31 & 0.01 & 0.37 & 0.05 & 0.04 & 0.15 & -0.20 &
-1.00 & 0.09 & 0.25
-\\\addlinespace
+1.00 & 0.09 & 0.25\tabularnewline
 Alchool & -0.06 & -0.20 & 0.11 & 0.04 & -0.22 & -0.07 & -0.21 & -0.50 &
-0.21 & 0.09 & 1.00 & 0.48
-\\\addlinespace
+0.21 & 0.09 & 1.00 & 0.48\tabularnewline
 Qlity & 0.12 & -0.39 & 0.23 & 0.01 & -0.13 & -0.05 & -0.19 & -0.17 &
--0.06 & 0.25 & 0.48 & 1.00
-\\\addlinespace
+-0.06 & 0.25 & 0.48 & 1.00\tabularnewline
 \bottomrule
-\addlinespace
-\caption{Correlation Matrix}
 \end{longtable}
 
 we can see from the table above some interesting highlights. The first
@@ -358,42 +488,70 @@ The graphic below shows the main components for the explanation of the
 variance. The table is built to carry the heaviest proportion of the
 variance in the first components.
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pca <-}\StringTok{ }\KeywordTok{prcomp}\NormalTok{(data[,}\DecValTok{1}\NormalTok{:}\DecValTok{11}\NormalTok{])}
+\KeywordTok{plot}\NormalTok{(pca, }\DataTypeTok{type =}\StringTok{"l"}\NormalTok{, }\DataTypeTok{main =} \StringTok{"Principal Component Analysis"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{figure}[htbp]
 \centering
-\includegraphics{./Project_files/figure-latex/unnamed-chunk-11-1.pdf}
+\includegraphics{Project_files/figure-latex/unnamed-chunk-11-1.pdf}
 \caption{Proportion of Variance Explained by Principal Component}
 \end{figure}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#summary(pca)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{summary_pca<-}\KeywordTok{summary}\NormalTok{(pca)}
+
+\NormalTok{percent <-}\StringTok{ }\NormalTok{function(x, }\DataTypeTok{digits =} \DecValTok{2}\NormalTok{, }\DataTypeTok{format =} \StringTok{"f"}\NormalTok{, ...) \{}
+  \KeywordTok{paste0}\NormalTok{(}\KeywordTok{formatC}\NormalTok{(}\DecValTok{100} \NormalTok{*}\StringTok{ }\NormalTok{x, }\DataTypeTok{format =} \NormalTok{format, }\DataTypeTok{digits =} \NormalTok{digits, ...), }\StringTok{"%"}\NormalTok{)}
+\NormalTok{\}}
+\NormalTok{t1<-}\KeywordTok{percent}\NormalTok{(summary_pca$importance[}\DecValTok{2}\NormalTok{,])}
+\NormalTok{t2<-}\KeywordTok{percent}\NormalTok{(summary_pca$importance[}\DecValTok{3}\NormalTok{,])}
+\NormalTok{variance_pca<-}\KeywordTok{cbind}\NormalTok{(t1,t2)}
+\KeywordTok{colnames}\NormalTok{(variance_pca)<-}\KeywordTok{c}\NormalTok{(}\StringTok{"PVE"}\NormalTok{, }\StringTok{"Accumulated PVE"}\NormalTok{)}
+\NormalTok{rnames<-}\KeywordTok{array}\NormalTok{()}
+\NormalTok{for(i in }\DecValTok{1}\NormalTok{:}\DecValTok{11}\NormalTok{)\{}
+  \NormalTok{rnames[i]<-}\KeywordTok{paste}\NormalTok{(}\StringTok{"PC"}\NormalTok{,i, }\DataTypeTok{sep =} \StringTok{""}\NormalTok{)}
+\NormalTok{\}}
+
+\KeywordTok{rownames}\NormalTok{(variance_pca)<-rnames}
+\NormalTok{variance_pca<-}\KeywordTok{data.frame}\NormalTok{(variance_pca)}
+
+\NormalTok{knitr::}\KeywordTok{kable}\NormalTok{(variance_pca, }\DataTypeTok{caption =} \StringTok{"Proportion of Variance Explained by Components"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{longtable}[c]{@{}lll@{}}
-\toprule\addlinespace
-& PVE & Accumulated.PVE
-\\\addlinespace
-\midrule\endhead
-PC1 & 94.66\% & 94.66\%
-\\\addlinespace
-PC2 & 4.84\% & 99.50\%
-\\\addlinespace
-PC3 & 0.26\% & 99.75\%
-\\\addlinespace
-PC4 & 0.15\% & 99.91\%
-\\\addlinespace
-PC5 & 0.09\% & 99.99\%
-\\\addlinespace
-PC6 & 0.00\% & 100.00\%
-\\\addlinespace
-PC7 & 0.00\% & 100.00\%
-\\\addlinespace
-PC8 & 0.00\% & 100.00\%
-\\\addlinespace
-PC9 & 0.00\% & 100.00\%
-\\\addlinespace
-PC10 & 0.00\% & 100.00\%
-\\\addlinespace
-PC11 & 0.00\% & 100.00\%
-\\\addlinespace
+\caption{Proportion of Variance Explained by Components}\tabularnewline
+\toprule
+& PVE & Accumulated.PVE\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+& PVE & Accumulated.PVE\tabularnewline
+\midrule
+\endhead
+PC1 & 94.66\% & 94.66\%\tabularnewline
+PC2 & 4.84\% & 99.50\%\tabularnewline
+PC3 & 0.26\% & 99.75\%\tabularnewline
+PC4 & 0.15\% & 99.91\%\tabularnewline
+PC5 & 0.09\% & 99.99\%\tabularnewline
+PC6 & 0.00\% & 100.00\%\tabularnewline
+PC7 & 0.00\% & 100.00\%\tabularnewline
+PC8 & 0.00\% & 100.00\%\tabularnewline
+PC9 & 0.00\% & 100.00\%\tabularnewline
+PC10 & 0.00\% & 100.00\%\tabularnewline
+PC11 & 0.00\% & 100.00\%\tabularnewline
 \bottomrule
-\addlinespace
-\caption{Proportion of Variance Explained by Components}
 \end{longtable}
 
 The criteria to evaluate a good model is around 80 being good and
@@ -407,36 +565,41 @@ it doesn't vary or it has the same variation.
 Besides reducing the number of variables for the model, the component
 also highlights any particular evidence for clusters.
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{eigenvalues<-}\KeywordTok{round}\NormalTok{(pca$sdev,}\DecValTok{2}\NormalTok{)}
+\NormalTok{names<-data_names[}\DecValTok{1}\NormalTok{:}\DecValTok{11}\NormalTok{]}
+\NormalTok{eigenvalues<-}\KeywordTok{cbind}\NormalTok{(names, eigenvalues)}
+\NormalTok{eigenvalues<-}\KeywordTok{data.frame}\NormalTok{(eigenvalues)}
+\KeywordTok{names}\NormalTok{(eigenvalues)<-}\KeywordTok{c}\NormalTok{(}\StringTok{"a"}\NormalTok{, }\StringTok{"b"}\NormalTok{)}
+\NormalTok{eigenvalues<-eigenvalues[}\KeywordTok{with}\NormalTok{(eigenvalues, }\KeywordTok{order}\NormalTok{(b)),]}
+\KeywordTok{names}\NormalTok{(eigenvalues)<-}\KeywordTok{c}\NormalTok{(}\StringTok{"Variables"}\NormalTok{, }\StringTok{"EigenValues"}\NormalTok{)}
+\NormalTok{knitr::}\KeywordTok{kable}\NormalTok{(eigenvalues, }\DataTypeTok{caption =} \StringTok{"Eigenvalues"}\NormalTok{, }\DataTypeTok{digits=}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{longtable}[c]{@{}lll@{}}
-\toprule\addlinespace
-& Variables & EigenValues
-\\\addlinespace
-\midrule\endhead
-11 & Alcohol & 0
-\\\addlinespace
-10 & Sulphates & 0.04
-\\\addlinespace
-9 & PH & 0.1
-\\\addlinespace
-8 & Density & 0.11
-\\\addlinespace
-7 & Total Sulfur Dioxide & 0.15
-\\\addlinespace
-6 & Free Sulfur Dioxide & 0.2
-\\\addlinespace
-5 & Chlorides & 1.02
-\\\addlinespace
-4 & Residual Sugar & 1.35
-\\\addlinespace
-3 & Citric Acid & 1.76
-\\\addlinespace
-1 & Fixed Acidity & 33.67
-\\\addlinespace
-2 & Volatile Acidity & 7.61
-\\\addlinespace
+\caption{Eigenvalues}\tabularnewline
+\toprule
+& Variables & EigenValues\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+& Variables & EigenValues\tabularnewline
+\midrule
+\endhead
+11 & Alcohol & 0\tabularnewline
+10 & Sulphates & 0.04\tabularnewline
+9 & PH & 0.1\tabularnewline
+8 & Density & 0.11\tabularnewline
+7 & Total Sulfur Dioxide & 0.15\tabularnewline
+6 & Free Sulfur Dioxide & 0.2\tabularnewline
+5 & Chlorides & 1.02\tabularnewline
+4 & Residual Sugar & 1.35\tabularnewline
+3 & Citric Acid & 1.76\tabularnewline
+1 & Fixed Acidity & 33.67\tabularnewline
+2 & Volatile Acidity & 7.61\tabularnewline
 \bottomrule
-\addlinespace
-\caption{Eigenvalues}
 \end{longtable}
 
 Based on eigenvalues we can observe that Acidity is more mixed within
@@ -449,12 +612,26 @@ and they have a positive correlation to the increase of the rates.
 
 Plotting the first two components we have the following graph:
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(lattice)}
+\KeywordTok{library}\NormalTok{(directlabels)}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{verbatim}
 ## Loading required package: grid
 ## Loading required package: quadprog
 \end{verbatim}
 
-\includegraphics{./Project_files/figure-latex/unnamed-chunk-14-1.pdf} We
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{t2<-}\KeywordTok{cbind}\NormalTok{(pca$x[,}\DecValTok{1}\NormalTok{], pca$x[,}\DecValTok{3}\NormalTok{], data$quality)}
+\KeywordTok{direct.label}\NormalTok{(}\KeywordTok{xyplot}\NormalTok{(t2[,}\DecValTok{2}\NormalTok{]~t2[,}\DecValTok{1}\NormalTok{],}\DataTypeTok{groups=}\NormalTok{t2[,}\DecValTok{3}\NormalTok{], }\DataTypeTok{ylab=}\StringTok{"Component 3"}\NormalTok{, }\DataTypeTok{xlab =} \StringTok{"Component 1"}\NormalTok{, }\DataTypeTok{main =} \StringTok{"Plot of the first and third Principal Component"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Project_files/figure-latex/unnamed-chunk-14-1.pdf} We
 can see that the 5 rates is lower but also more expanded than the
 others.
 
@@ -469,6 +646,18 @@ properties of all other memory-based classification methods - defer most
 of the processing of the training data point until after a query is made
 - and has some particular qualities like simplicity, capability of
 extrapolating and a known confidence interval. \cite{log}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data_2<-data}
+\NormalTok{data_2[,}\DecValTok{12}\NormalTok{]<-}\KeywordTok{as.factor}\NormalTok{(data_2[,}\DecValTok{12}\NormalTok{])}
+
+\NormalTok{formula_text <-}\StringTok{ }\KeywordTok{paste}\NormalTok{(}\KeywordTok{names}\NormalTok{(data_2[}\DecValTok{12}\NormalTok{]),}\StringTok{"~"}\NormalTok{,}\KeywordTok{paste}\NormalTok{(}\KeywordTok{names}\NormalTok{(data[}\DecValTok{1}\NormalTok{:}\DecValTok{11}\NormalTok{]), }\DataTypeTok{collapse=}\StringTok{"+"}\NormalTok{))}
+\NormalTok{formula_raw <-}\StringTok{ }\KeywordTok{as.formula}\NormalTok{(formula_text)}
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(formula_raw,}\DataTypeTok{data=}\NormalTok{data_2,}\DataTypeTok{family=}\KeywordTok{binomial}\NormalTok{())}
+\KeywordTok{summary}\NormalTok{(fit)}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{verbatim}
 ## 
@@ -525,6 +714,20 @@ possible to predict the rate based on the coefficients above.
 Now applying the same methodology to the PCA data set we have the
 following output:
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data_pca<-}\KeywordTok{cbind}\NormalTok{(pca$x[,}\DecValTok{1}\NormalTok{], pca$x[,}\DecValTok{2}\NormalTok{], pca$x[,}\DecValTok{3}\NormalTok{], data$quality)}
+\NormalTok{data_pca<-}\KeywordTok{data.frame}\NormalTok{(data_pca)}
+\KeywordTok{names}\NormalTok{(data_pca)<-}\KeywordTok{c}\NormalTok{(}\StringTok{"comp1"}\NormalTok{, }\StringTok{"comp2"}\NormalTok{, }\StringTok{"comp3"}\NormalTok{, }\StringTok{"quality"}\NormalTok{)}
+\NormalTok{data_pca[,}\DecValTok{4}\NormalTok{]<-}\KeywordTok{as.factor}\NormalTok{(data_pca[,}\DecValTok{4}\NormalTok{])}
+
+\NormalTok{formula_text <-}\StringTok{ }\KeywordTok{paste}\NormalTok{(}\KeywordTok{names}\NormalTok{(data_pca[}\DecValTok{4}\NormalTok{]),}\StringTok{"~"}\NormalTok{,}\KeywordTok{paste}\NormalTok{(}\KeywordTok{names}\NormalTok{(data_pca[}\DecValTok{1}\NormalTok{:}\DecValTok{3}\NormalTok{]), }\DataTypeTok{collapse=}\StringTok{"+"}\NormalTok{))}
+\NormalTok{formula <-}\StringTok{ }\KeywordTok{as.formula}\NormalTok{(formula_text)}
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(formula,}\DataTypeTok{data=}\NormalTok{data_pca,}\DataTypeTok{family=}\KeywordTok{binomial}\NormalTok{())}
+\KeywordTok{summary}\NormalTok{(fit)}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{verbatim}
 ## 
 ## Call:
@@ -569,9 +772,41 @@ with 3 prediction error over 67\%
 
 But still very accurate.
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(}\StringTok{"caret"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{verbatim}
 ## Loading required package: ggplot2
 \end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{folds <-}\StringTok{ }\KeywordTok{createFolds}\NormalTok{(data$quality)}
+\NormalTok{i=}\DecValTok{1}
+\NormalTok{for (f in folds)\{}
+  \NormalTok{train <-}\StringTok{ }\NormalTok{data[-f,] }
+  \NormalTok{test <-}\StringTok{ }\NormalTok{data[f,]}
+  \NormalTok{fit <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(formula_raw, }\DataTypeTok{data=}\NormalTok{train) }
+  \NormalTok{test$scores <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(fit, }\DataTypeTok{type=}\StringTok{"response"}\NormalTok{, }
+                      \DataTypeTok{newdata=}\NormalTok{test)}
+  \NormalTok{pred<-}\KeywordTok{abs}\NormalTok{((}\KeywordTok{round}\NormalTok{(test$scores)-test$quality)/test$quality)}
+
+  \NormalTok{pred_table<-}\KeywordTok{table}\NormalTok{(}\KeywordTok{round}\NormalTok{(pred,}\DecValTok{2}\NormalTok{))}
+  \KeywordTok{print}\NormalTok{(}\KeywordTok{paste}\NormalTok{(}\StringTok{"Prediction Table for validation"}\NormalTok{, i))}
+  \KeywordTok{print}\NormalTok{(pred_table)}
+
+  \CommentTok{#confusion matrix using 90% accuracy}
+  \NormalTok{c<-}\KeywordTok{table}\NormalTok{(}\KeywordTok{factor}\NormalTok{(}\KeywordTok{round}\NormalTok{(test$scores),}\DataTypeTok{levels=}\DecValTok{3}\NormalTok{:}\DecValTok{8}\NormalTok{), test$quality)}
+  \KeywordTok{print}\NormalTok{(}\KeywordTok{paste}\NormalTok{(}\StringTok{"Confusion Matrix for validation"}\NormalTok{, i))}
+  \KeywordTok{print}\NormalTok{(c)}
+  \NormalTok{i=i}\DecValTok{+1}
+  \NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{verbatim}
 ## [1] "Prediction Table for validation 1"
@@ -767,16 +1002,16 @@ possible the automation and deployment into a quality assurance process.
 
 Histogram of all Variables
 
-\includegraphics{./Project_files/figure-latex/unnamed-chunk-18-1.pdf}
-\includegraphics{./Project_files/figure-latex/unnamed-chunk-18-2.pdf}
-\includegraphics{./Project_files/figure-latex/unnamed-chunk-18-3.pdf}
-\includegraphics{./Project_files/figure-latex/unnamed-chunk-18-4.pdf}
-\includegraphics{./Project_files/figure-latex/unnamed-chunk-18-5.pdf}
-\includegraphics{./Project_files/figure-latex/unnamed-chunk-18-6.pdf}
-\includegraphics{./Project_files/figure-latex/unnamed-chunk-18-7.pdf}
-\includegraphics{./Project_files/figure-latex/unnamed-chunk-18-8.pdf}
-\includegraphics{./Project_files/figure-latex/unnamed-chunk-18-9.pdf}
-\includegraphics{./Project_files/figure-latex/unnamed-chunk-18-10.pdf}
-\includegraphics{./Project_files/figure-latex/unnamed-chunk-18-11.pdf}
+\includegraphics{Project_files/figure-latex/unnamed-chunk-18-1.pdf}
+\includegraphics{Project_files/figure-latex/unnamed-chunk-18-2.pdf}
+\includegraphics{Project_files/figure-latex/unnamed-chunk-18-3.pdf}
+\includegraphics{Project_files/figure-latex/unnamed-chunk-18-4.pdf}
+\includegraphics{Project_files/figure-latex/unnamed-chunk-18-5.pdf}
+\includegraphics{Project_files/figure-latex/unnamed-chunk-18-6.pdf}
+\includegraphics{Project_files/figure-latex/unnamed-chunk-18-7.pdf}
+\includegraphics{Project_files/figure-latex/unnamed-chunk-18-8.pdf}
+\includegraphics{Project_files/figure-latex/unnamed-chunk-18-9.pdf}
+\includegraphics{Project_files/figure-latex/unnamed-chunk-18-10.pdf}
+\includegraphics{Project_files/figure-latex/unnamed-chunk-18-11.pdf}
 
 \end{document}

@@ -45,7 +45,7 @@ evaluate_Weka_classifier(classifier, testing_data)
 
 
 ```
-So we have a accuracy of 97.59% of the cases, and in this project we need to find the best K for set of data.
+So we have an accuracy of 97.59% of the cases, and in this project we need to find the best K for set of data.
 
 Running the same algorithm for other cases we found that k=1 has the best Correctly Classified Instances:
 
