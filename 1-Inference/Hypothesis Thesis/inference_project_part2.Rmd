@@ -1,0 +1,264 @@
+
+---
+title: "Linear Regression"
+author: "Andresa de Andrade"
+date: "August 15, 2014"
+output:
+  pdf_document:
+    fig_caption: yes
+    keep_tex: yes
+    number_sections: yes
+    toc: yes
+    
+  html_document:
+    fig_caption: yes
+    bibliography: bibliography.bib
+---
+
+<div id="toc">
+<ul><li>
+\newpage 
+
+# <a href="#toc_1">Summary of the data</a>
+
+The methodology here applied is the same as it should have been applied for an A/B test which is testing the difference of means for two treatments.
+
+We'll be working with 60 observations of 10 guinea pigs. In this project we are interested in understanding the difference in length of the teeth for different levels of vitamin C and two deliver methods: orange juice and ascorbic acid.
+
+</li></ul>
+<ul> <li>
+
+
+# <a href="#toc_1">Exploratory Analysis</a>
+
+```{r, echo=FALSE}
+vc_05<- subset(ToothGrowth , supp == "VC" & dose=="0.5", select=c(len))
+vc_1<- subset(ToothGrowth , supp == "VC" & dose=="1", select=c(len))
+vc_2<- subset(ToothGrowth , supp == "VC" & dose=="2", select=c(len))
+
+oj_05<- subset(ToothGrowth , supp != "VC" & dose=="0.5", select=c(len))
+oj_1<- subset(ToothGrowth , supp != "VC" & dose=="1", select=c(len))
+oj_2<- subset(ToothGrowth , supp != "VC" & dose=="2", select=c(len))
+
+vc_subset<- subset(ToothGrowth , supp == "VC")
+oj_subset<- subset(ToothGrowth , supp != "VC")
+
+dose_1 <- subset(ToothGrowth , dose=="1", select=c(len))
+dose_2 <- subset(ToothGrowth , dose=="2", select=c(len))
+dose_05<- subset(ToothGrowth , dose=="0.5", select=c(len))
+
+```
+
+We need to check  the 6 combinations of data (by supplement and by dose)
+
+Please consider Ascorbic Acid as VC and Orange Juice as OJ:
+
+```{r, echo=FALSE, warning=FALSE}
+
+#function to filter the dataset
+filter_data<-function(dose_filter=NULL, sup_filter=NULL){
+  
+  #if both args are being passed we should filter them out
+  if(!missing(dose_filter) && !missing(sup_filter)){
+    filtered_data<-subset(ToothGrowth, dose==dose_filter & supp==sup_filter)
+    filtered_data<-filtered_data$len
+    #if only one of the args is being passed, we should is it
+    } else if(missing(dose_filter) && !missing(sup_filter))
+           {filtered_data<-subset(ToothGrowth, supp==sup_filter) 
+            filtered_data<-filtered_data$len
+    } else if(!missing(dose_filter) && missing(sup_filter)) 
+      
+    {filtered_data<-subset(ToothGrowth, dose==dose_filter)
+     filtered_data<-filtered_data$len
+    }else{filtered_data<-ToothGrowth$len}
+  # if the function args are not fed, we should consider no filter
+  
+  return(filtered_data)
+}
+
+
+#######################################################
+#function that create the desired vector of stats
+create_vector<-function(vector){
+  s.len<-as.character(length(vector))
+  s.mean<-trunc(mean(vector)*100)/100
+  s.stdev<-trunc(sd(vector)*100)/100
+  s.min<-trunc(min(vector)*100)/100
+  s.max<-trunc(max(vector)*100)/100
+  
+  s.vector<-c(s.len, s.mean, s.stdev, s.min, s.max)
+  return(s.vector)
+}
+
+
+all<-create_vector(filter_data())
+orange.juice<-create_vector(filter_data(,"VC"))
+ascorbic.acid<-create_vector(filter_data(,"OJ"))
+dose1_0.5 <-create_vector(filter_data("0.5",))
+dose1_1<-create_vector(filter_data("1",))
+dose1_2<-create_vector(filter_data("2",))
+
+vc_dose1_0.5<-create_vector(filter_data("0.5","VC"))
+vc_dose1_1<-create_vector(filter_data("1","VC"))
+vc_dose1_2<-create_vector(filter_data("2","VC"))
+
+oj_dose1_0.5<-create_vector(filter_data("0.5","VC"))
+oj_dose1_1<-create_vector(filter_data("1","VC"))
+oj_dose1_2<-create_vector(filter_data("2","VC"))
+
+empty_vector<-c(" ", " ", " ", " ", " ")
+
+stats_table<-rbind(all, orange.juice, ascorbic.acid, empty_vector, dose1_0.5, dose1_1, dose1_2, empty_vector, vc_dose1_0.5, vc_dose1_1, vc_dose1_2, empty_vector, oj_dose1_0.5, oj_dose1_1, oj_dose1_2)
+
+row.names(stats_table)<-c("ToothGrowth", "Orange Juice", "Ascorbic Acid", "*", "Dose = 0.5", "Dose = 1", "Dose = 2" ,"*", "VC Dose  = 0.5", "VC Dose = 1", "VC Dose =2","*", "OJ Dose = 0.5", "OJ Dose = 1", "OJ Dose =2")
+colnames(stats_table)<-c("N", "Mean", "St. Dev", "Min", "Max")
+library("pander")
+pander(stats_table)
+#pandoc.horizontal.rule.return(stats_table)
+
+```
+
+
+
+- From the table above and the Figure 2 we can infer that the average of teeth length between guinea pigs that were fed with orange juice is slightly higher than the ones fed with ascorbic acid, also the variability is lower for orange juice. But we can't really say that there's a significant difference.
+- When we look at different doses of vitamin C we observe an increase of average as well as a decrease of variance for teeth length  as the doses get higher. 
+- And when check the combination between type of supplement and vitamin C doses, we have, again, a better performance for Orange Juice. In the first dose bucket, orange juice teeth average is 60% higher than VC and standard variation is 60% lower than VC (the lower the sd the better). Even though for dose at 2, we have a higher average for VC, the variance is almost twice as for the orange juice, what suggests outliers or the data is more disperse around the mean as we can see in the boxplot.
+ - Normality Assumption : from the Figure 1, we can't really infer that we have a normal distribution because the presence of outliers is very strong in this model. Thus for tests purposes, we'll be using the T-student distribution.
+
+</li></ul>
+<ul> <li>
+
+
+# <a href="#toc_1">Statistics Tests</a>
+
+
+Now that we have an idea of how data is distributed, lets check if we can confirm with a statistic test. This is the test that we'll be applying:
+
+\def\oj{\rule{0pt}{1.0ex}orangejuice}
+\def\vc{\rule{0pt}{1.0ex}ascorbicacid}
+$H_{0}: \mu_{\oj} = \mu_{\vc}$ versus $H_{1}: \mu_{\oj} \neq \mu_{\vc}$
+
+Note: we don't have a paired test because we have different guinea pigs tooth.
+
+
+The p-value for difference in types of supplement(vc and oj) is greater than 0.05, which suggests that there's no difference between orange juice and ascorbic acid.
+
+Let's test if there's difference between the doses of vitamin C:
+
+According to the Figure 5, there's difference between treatment at 0.5 mg and 1mg. And the CI for 95% of confidence is [-11.984, -6.276]. So if the difference between means was within this interval (considering absolute numbers), we could have inferred that there's no difference between treatments.
+
+According to the Figure 6, we also have the difference between treatments from doses at 0.5 and at 1 not significant (p-value <0.01).
+
+Now to check if there's difference between treatment at dose = 1 and at treatment dose = 2 we go to Figure 7 and observe that the p-value is also very low, so we can reject the null hypothesis of no difference between the the treatments.
+
+
+
+ 
+\newpage
+</li></ul>
+<ul> <li>
+
+
+# <a href="#toc_1">#Appendix</a>
+
+
+
+
+```{r, echo=FALSE, fig.cap = "Histogram of Teeth Lenth for method of delivery Oranje Juice", fig.height=3}
+#hist(ToothGrowth$len, main = "Tooth Growth", xlab = "Teeth length")
+hist(oj_subset$len, main = "Orange juice", xlab = "Teeth length")
+
+```
+
+```{r, echo=FALSE, fig.cap = "Histogram of Teeth Lenth for method of delivery Acid Ascorbic", fig.height=3}
+
+hist(vc_subset$len, main = "Ascorbic Acid", xlab = "Teeth length")
+```
+
+
+```{r, echo=FALSE,fig.height=3, fig.cap = c("Acid Ascorbic", "Orange Juice")}
+
+boxplot(vc_subset$len, main = "Figure 2. Tooth Growth by type of supplement",  
+        boxwex = 0.25, 
+        at = 1+0.25,
+        ylim = c(0, 35), yaxs = "i",
+        xlim = c(1,2), col = "blue",
+        ylab = "tooth length"
+        )
+boxplot(oj_subset$len,  
+        add = TRUE, col = "orange",
+        boxwex = 0.25, at = 2-0.5)
+legend(2-0.3, 20, c("Ascorbic acid", "Orange juice"),
+       fill = c("blue", "orange"))
+```
+
+
+```{r, echo=FALSE, fig.height=4}
+#boxplot(len ~ dose, data = ToothGrowth,
+ #       boxwex = 0.25, at = 1:8 - 0.2,
+  #      subset = supp == "VC", col = "green",
+   #     main = "Figure 3. Guinea Pigs' Tooth Growth",
+    #    xlab = "Vitamin C dose mg",
+     #   ylab = "tooth length",
+      #  xlim = c(0.5, 3.5), ylim = c(0, 35), yaxs = "i")
+#boxplot(len ~ dose, data = ToothGrowth, add = TRUE,
+ #       boxwex = 0.25, at = 1:3 + 0.2,
+  #      subset = supp == "OJ", col = "red")
+#legend(2+0.25, 13, c("Ascorbic acid", "Orange juice"),
+ #      fill = c("green", "red"))
+```
+
+
+
+
+Figure 4
+```{r, echo=FALSE, fig.height = 5}
+t.test(vc_subset$len, oj_subset$len)
+```
+
+
+
+
+
+ Figure 5 - Dose: 0.5 x 1 
+ 
+```{r, echo=FALSE, fig.height=3}
+head(dose_1$len)
+t.test(dose_05$len, dose_1$len)
+``` 
+
+Figure 6 - Dose: 0.5 x 2
+  
+```{r, echo=FALSE}
+#t.test(dose_05$len, dose_2$len)
+```
+Figure 7 - Dose: 1 x 2
+  
+```{r, echo=FALSE}
+t.test(dose_2$len, dose_1$len)
+```
+
+
+Figure 8 - Dose: 0.5 Orange Juice x Ascorbic Acid
+  
+```{r, echo=FALSE}
+t.test(vc_05$len, oj_05$len)
+```
+
+
+Figure 9 - Dose: 1 Orange Juice x Ascorbic Acid
+  
+```{r, echo=FALSE}
+t.test(vc_1$len, oj_1$len)
+```
+
+Figure 10 - Dose: 2 Orange Juice x Ascorbic Acid
+  
+```{r, echo=FALSE}
+t.test(vc_2$len, oj_2$len)
+```
+
+
+</li></ul>
+</li></ul>
+</div>
