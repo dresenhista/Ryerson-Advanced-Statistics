@@ -36,26 +36,26 @@ n_automatic = length(automatic_mpg)
 ```
 
 **Manual Explanatory Statistics**
-```{r, prompt=FALSE, tidy=FALSE, echo=FALSE}
+```{r, prompt=FALSE, tidy=FALSE}
 summary(manual_mpg)
 ```
 Standard Deviation
-```{r, prompt=FALSE, tidy=FALSE, echo=FALSE}
+```{r, prompt=FALSE, tidy=FALSE}
 sd(manual_mpg)
 ```
 
 Automatic Explanatory Statistics
-```{r, prompt=FALSE, tidy=FALSE, echo=FALSE}
+```{r, prompt=FALSE, tidy=FALSE}
 summary(automatic_mpg)
 ```
 Standard Deviation
-```{r, prompt=FALSE, tidy=FALSE, echo=FALSE}
+```{r, prompt=FALSE, tidy=FALSE}
 sd(automatic_mpg)
 ```
 
 Comparing both sets of data:
 
-```{r, prompt=FALSE, tidy=FALSE, echo=FALSE}
+```{r, prompt=FALSE, tidy=FALSE}
 par(mfcol=c(1,2))
 boxplot(automatic_mpg, main = "mpg in automatic cars",ylim = c(10, 35))
 boxplot(manual_mpg, main = "mpg in manual cars",  ylim = c(10, 35))
@@ -75,7 +75,7 @@ So let's solve this:
 Let's try to predict mpg based on information about being automatic or not. For this we'll use a multivariate linear regression model where our outcome is mpg performance and our output is a binary variable (1 if manual, 0 if automatic)
 
 
-```{r, prompt=FALSE, tidy=FALSE, echo=FALSE}
+```{r, prompt=FALSE, tidy=FALSE}
 fit<-lm(y~ x + z)
 summary(fit)
 sumCoef <- summary(fit)$coefficients
@@ -96,7 +96,7 @@ Both Betas have passed the T- test , ie, they both have a small p-value, lower t
 
 When we check the residuals, we have:
 
-```{r chunck2, fig.show='hold', fig.width=8, echo=FALSE} 
+```{r chunck2, fig.show='hold', fig.width=8} 
 par(mfrow = c(2, 2))
 plot(fit)
 ```
@@ -106,7 +106,7 @@ So based on data above we can see that the model fits well since the residuals f
 Let's try exclude the intercept to see if it changes anything about the coefficients:
 
 
-```{r, prompt=FALSE, tidy=FALSE, echo=FALSE}
+```{r, prompt=FALSE, tidy=FALSE}
 fit2<-lm(y~ x + z - 1)
 summary(fit2)
 sumCoef <- summary(fit2)$coefficients
@@ -118,7 +118,7 @@ So based on descriptive analyses and on the regression model we can conclude tha
 To quantify this difference, I'd use the odd ratio that in this case is 
 
 beta(for manual cars)/beta(automatic cars) = 
-```{r, echo=FALSE}
+```{r}
 sumCoef[1,1]/sumCoef[2,1]
 ```
 So manual cars have a performance for mpg 42% better in average compared to automatic cars
