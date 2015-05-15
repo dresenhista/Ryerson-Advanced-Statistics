@@ -1,18 +1,17 @@
 
 ---
-title: "Linear Regression"
+title: "Hipothesis Test for not paired sample"
 author: "Andresa de Andrade"
 date: "August 15, 2014"
 output:
+  html_document:
+    bibliography: bibliography.bib
+    fig_caption: yes
   pdf_document:
     fig_caption: yes
     keep_tex: yes
     number_sections: yes
     toc: yes
-    
-  html_document:
-    fig_caption: yes
-    bibliography: bibliography.bib
 ---
 
 <div id="toc">
