@@ -4,14 +4,14 @@ title: "The Wine Vinho Verde"
 author: "Andresa de Andrade"
 date: "April 2, 2015"
 output:
+  html_document:
+    bibliography: bibliography.bib
+    fig_caption: yes
   pdf_document:
     fig_caption: yes
     keep_tex: yes
     number_sections: yes
     toc: yes
-  html_document:
-    bibliography: bibliography.bib
-    fig_caption: yes
 ---
 
 
