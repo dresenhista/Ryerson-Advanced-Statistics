@@ -4,14 +4,14 @@ title: "Hipothesis Test for not paired sample"
 author: "Andresa de Andrade"
 date: "August 15, 2014"
 output:
-  html_document:
-    bibliography: bibliography.bib
-    fig_caption: yes
   pdf_document:
     fig_caption: yes
     keep_tex: yes
     number_sections: yes
     toc: yes
+  html_document:
+    bibliography: bibliography.bib
+    fig_caption: yes
 ---
 
 <div id="toc">
@@ -101,9 +101,9 @@ vc_dose1_0.5<-create_vector(filter_data("0.5","VC"))
 vc_dose1_1<-create_vector(filter_data("1","VC"))
 vc_dose1_2<-create_vector(filter_data("2","VC"))
 
-oj_dose1_0.5<-create_vector(filter_data("0.5","VC"))
-oj_dose1_1<-create_vector(filter_data("1","VC"))
-oj_dose1_2<-create_vector(filter_data("2","VC"))
+oj_dose1_0.5<-create_vector(filter_data("0.5","OJ"))
+oj_dose1_1<-create_vector(filter_data("1","OJ"))
+oj_dose1_2<-create_vector(filter_data("2","OJ"))
 
 empty_vector<-c(" ", " ", " ", " ", " ")
 
