@@ -1,0 +1,28 @@
+---
+title: "Assignment 1"
+author: "Andresa Andrade"
+date: "October 4, 2015"
+output: pdf_document
+---
+
+
+<div id="toc">
+<ul><li>
+
+
+# <a href="#toc_1">Introduction</a>
+#Context
+One of the most common current problems is to understand what the buyers want to buy and make sure they have it available. The purpose of this project is to understand any possible pattern in the customer behavior of an online shop and try to predict the types of coupons that the customers would want to use/buy. 
+
+For that we will use the data for a Japanese coupon site that offers coupon on basically everything. The dataset is composed by browsing history and also buying history.
+<ul> <li>
+
+<ul><li>
+
+
+# <a href="#toc_1">Related Literature</a>
+
+Because this dataset was adquired from Kaggle website, it's assumed that there are several other solutions that could be used to compare the results. Nevertheless this problem is not unusual within the statistic environment. Since the beggining of the days
+
+<ul> <li>
+</div>
