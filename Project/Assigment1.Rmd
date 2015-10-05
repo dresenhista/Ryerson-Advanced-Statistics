@@ -12,9 +12,9 @@ output: pdf_document
 
 # <a href="#toc_1">Introduction</a>
 #Context
-One of the most common current problems is to understand what the buyers want to buy and make sure they have it available. The purpose of this project is to understand any possible pattern in the customer behavior of an online shop and try to predict the types of coupons that the customers would want to use/buy. 
+In recent years understand what are the factors that lead a buy to finalize a conversion has become one of the most important problems of online marketing business. The purpose of this project is to understand any possible pattern in the customer behavior of an online shop and try to predict the types of coupons that the customers would want to use/buy. 
 
-For that we will use the data for a Japanese coupon site that offers coupon on basically everything. The dataset is composed by browsing history and also buying history.
+Along the way we shal show the structure of categorization and how the machine learning algorithm would work. We also will present the conditions
 <ul> <li>
 
 <ul><li>
