@@ -51,3 +51,11 @@ Temporary Items
 1-Inference/Hypothesis Thesis/inference_project_part2_files/figure-latex/unnamed-chunk-5-1.pdf
 *.png
 *.jpeg
+
+*.zip
+
+Project/data/coupon_visit_train.csv
+
+Project/data/coupon_area_train.csv
+
+Project/Assigment1.pdf
