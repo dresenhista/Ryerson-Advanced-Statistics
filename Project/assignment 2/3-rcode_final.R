@@ -1,5 +1,5 @@
 #after mysql treating
-sample_1<-read.csv('data/no_referrers_2.csv')
+sample_1<-read.csv('no_referrers.csv')
 sample_1$price_rate<-as.numeric(sample_1$price_rate)
 sample_1$age<-as.numeric(sample_1$age)
 #sample_1$capsule_text<-as.factor(sample_1$capsule_text)
