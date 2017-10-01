@@ -1,0 +1,111 @@
+---
+title: "Week 7 Application Part"
+output: beamer_presentation
+---
+```{r setup, cache = F, echo = F, message = F, warning = F, tidy = F, results='hide'}
+library("knitr")
+options(width = 1000)
+opts_chunk$set(message = F, error = F, warning = F, comment = NA, fig.align = 'center', dpi = 300)
+```
+
+
+## Preparation
+```{r, warning=FALSE, results='hide'}
+library("RWeka") # for datasets
+library("ROCR") # visualize performance of classifiers
+library("caret") # for confusion matrix
+library("e1071") # may be needed for caret
+diabetes <- read.arff(system.file("arff", "diabetes.arff", 
+                                  package = "RWeka"))
+```
+
+## Solution of the Optional Problem From Last Week
+
+In this part, we will go through the R code steps based on the 
+solution for lab 6.
+
+## Dynamically Create R Formulas
+
+You do not need to write variable names every time on regression models.
+
+```{r}
+formula_text <- paste(names(diabetes[9]),"~",
+                paste(names(diabetes[1:8]), collapse="+")
+                )
+formula <- as.formula(formula_text)
+formula
+```
+
+## Fit a logistic Regression Model
+
+*Remember: fit checks your model on the same data.*
+
+```{r}
+diabetes$class <- as.integer(diabetes$class) - 1
+fit <- glm(formula,data=diabetes,family=binomial())
+summary(fit) # display fit results
+```
+
+## Predict using Random Split
+
+```{r}
+rn_train <- sample(nrow(diabetes), 
+                   floor(nrow(diabetes)*0.7))
+train <- diabetes[rn_train,]
+test <- diabetes[-rn_train,]
+fit <- lm(formula, data=train) 
+```
+
+## Predict using Random Split
+
+```{r}
+test$scores <- predict(fit, type="response", 
+                      newdata=test)
+
+pred<-prediction(test$scores, test$class)
+```
+
+## Create a Confusion Matrix
+
+```{r}
+c <- confusionMatrix(as.integer(test$scores > 0.5), 
+                     test$class)
+c$table
+```
+## Plot the ROC Curve
+```{r, fig.width = 4, fig.height= 3}
+perf<-performance(pred,"tpr","fpr")
+plot(perf, lty=1)
+```
+
+## Using rWeka For Logistic Regression
+```{r}
+diabetes <- read.arff(system.file("arff", "diabetes.arff", 
+                                  package = "RWeka"))
+weka_fit <- Logistic(formula, 
+                    data = diabetes)
+evaluate_Weka_classifier(weka_fit, numFolds = 10)
+```
+## Lab Preparation
+
+```{r, warning=FALSE, eval=FALSE}
+library("RWeka") # rweka (embedded Weka software)
+
+diabetes <- read.arff(system.file("arff", "diabetes.arff", 
+                                  package = "RWeka"))
+
+```
+
+## Lab Problems:
+*Using standard mtcars dataset*
+
+1. Create a formula am~hp+mpg+gear+carb. 
+
+2. Create a logistic regression model using the parameters.
+
+3. Check the performance of the logistic regression model and show ROC curve and confusion matrix.
+
+4. Using rweka interface compare the performance of knn with logistic regression for the same problem.
+
+5. (Optional) Play with the model parameters and attributes to increase the performance of your model.
+

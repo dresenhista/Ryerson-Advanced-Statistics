@@ -1,0 +1,110 @@
+---
+title: "Week 10 Application Part: Graph Analytics with R"
+output: beamer_presentation
+---
+```{r setup, cache = F, echo = F, message = F, warning = F, tidy = F, results='hide'}
+library("knitr")
+options(width = 1000)
+opts_chunk$set(message = F, error = F, warning = F, comment = NA, fig.align = 'center', dpi = 200)
+```
+
+
+## Preparation
+```{r, warning=FALSE, results='hide'}
+library("igraph") # graph analytics library in R
+```
+
+## Creating Graphs 
+
+*From an edge list*
+
+```{r, warning=FALSE}
+g <- graph( c(1,2, 1,5, 2,3, 2,5, 2,4,
+              3,4, 4,5), n=5, 
+            directed=F)
+```
+
+## Creating Graphs
+
+*Create complete or null graphs*
+
+```{r, warning=FALSE}
+full_g <- graph.full(5)
+empty_g <- graph.empty()
+```
+
+## Show Nodes and Edges
+
+```{r, warning=FALSE}
+V(g)
+V(full_g)
+V(empty_g)
+```
+
+## Show Nodes and Edges
+
+```{r, warning=FALSE}
+E(g)
+```
+
+## Read Graph Files
+
+```{r, warning=FALSE}
+karate <- read.graph("http://cneurocvs.rmki.kfki.hu/igraph/karate.net", 
+                     format="pajek")
+```
+
+## Show Degree Distribution
+
+```{r fig.width = 4, fig.height= 3}
+hist(degree(karate))
+```
+## Check Betweenness Values
+
+```{r, warning=FALSE}
+betweenness(g)
+edge.betweenness(g)
+```
+
+## Visualization of Graphs
+
+```{r fig.width = 4, fig.height= 3}
+plot(g, vertex.label=V(g), vertex.size=0)
+```
+
+## Visualization of Graphs
+
+```{r fig.width = 6, fig.height= 4}
+plot(karate, vertex.label=V(karate), vertex.size=0)
+```
+
+## Cluster a Graph
+
+*Check the connected components*
+
+```{r, warning=FALSE}
+is.connected(karate)
+clusters(g)
+```
+
+## Cluster a Graph
+
+*Cluster karate club network*
+
+```{r, fig.width = 6, fig.height= 4}
+wc <- edge.betweenness.community(karate)
+plot(wc, karate)
+```
+
+## Lab Preparation
+
+sample_graph <- barabasi.game(100, directed=F)
+
+## Lab Problems:
+
+- Create a trivial graph with 3 nodes A,B and C. There is an edge between A and B. There is an edge between B and C. Plot this graph in the end.
+- Show the degree distribution and plot the histogram of the degrees.
+- Show the correlation between betweenness and degree for each node.
+- Partition the sample graph and show its components.
+
+

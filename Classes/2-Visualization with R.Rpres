@@ -1,0 +1,476 @@
+<!--
+to do qq, bar, box, ggplot, lab questions
+--->
+
+Week 2: Visualization with R 
+========================================================
+<small>
+CKMT 105
+
+Data Science Certificate Program
+
+Ryerson University
+
+Bora Caglayan
+
+15 Jan, 2015
+</small>
+
+Course Details Reminder
+========================================================
+Required Text:
+  - Course notes
+  - Handouts 
+  - All announcements through Blackboard CMS.
+
+Recommended Reading:
+- Weekly reading material
+
+***
+
+Grading:
+- Lab Attendance  15%
+- 3 homeworks - 30 (10%x3)
+- Homework deadlines (week 6, week 9, week 12)
+- Midterm - 20%
+- Final - 35%
+- You may skip 2 labs without penalty.
+
+Weekly Schedule Overview
+=========
+- Each week a lecture followed by a lab session.
+- Lab sessions are scored based on attendance. Collaboration during the labs is encouraged.
+- Individual work on homeworks. 
+- Expected course work by the students is one hour per week.
+- Homework sets will be given in the end of week 3, week 6 and week 8. 
+- Please check Blackboard CMS regularly and follow the announcements.
+- Course notes will be provided before the lectures in Blackboard.
+
+Lecture Outline
+========================================================
+- Standard plotting
+- Plotting with ggplot package
+- Showing data on maps
+- Dealing with many data points
+- Lab Session
+
+Lecture Outline
+========================================================
+title: false
+<br />
+<br />
+<br />
+- R comes with a powerful standard visualization library.
+- More sophisticated plots can be created using libraries such as ggplot and ggmaps. 
+
+Plotting Basics
+========================================================
+Here is a basic plot:
+
+```{r fig.width=10, fig.height=6, fig.show='hold', fig.align='center'}
+plot(c(1,2,3), c(4,5,9))
+```
+
+Plotting Basics
+========================================================
+Adding labels:
+
+```{r fig.width=10, fig.height=6, fig.show='hold', fig.align='center'}
+plot(c(1,2,3), c(4,5,9), xlab="x", ylab="y", main="Basic Plot")
+```
+
+Plotting Basics
+========================================================
+Markers and lines:
+
+```{r fig.width=10, fig.height=6, fig.show='hold', fig.align='center'}
+plot(c(1,2,3), c(4,5,9), xlab="x", ylab="y", main="Basic Plot", type="b", pch="x")
+``` 
+
+Plotting Basics
+========================================================
+Multiple series:
+```{r fig.width=10, fig.height=4, fig.show='hold', fig.align='center'}
+plot(c(1,2,3), c(4,5,9), xlab="x", ylab="y", main="Basic Plot", col="red", type="b", pch="x")
+lines(c(1,2,3), c(6, 4, 7), type="b", pch="o", col="blue")
+```
+
+Plotting Basics
+========================================================
+Adding legends
+```{r fig.width=10, fig.height=6, fig.show='hold', fig.align='center', echo=TRUE, eval=FALSE}
+legend('topleft', c("L1", "L2") , 
+   lty=1, col=c('red', 'blue'), cex=1.5)
+```
+```{r fig.width=10, fig.height=6, fig.show='hold', fig.align='center', echo=FALSE}
+plot(c(1,2,3), c(4,5,9), xlab="x", ylab="y", main="Basic Plot", col="red", type="b", pch="x")
+lines(c(1,2,3), c(6, 4, 7), type="b", pch="o", col="blue")
+legend('topleft', c("L1", "L2") , 
+   lty=1, col=c('red', 'blue'), cex=1.5)
+```
+
+Plotting Basics
+========================================================
+Changing limits
+```{r fig.width=10, fig.height=6, fig.show='hold', fig.align='center', echo=TRUE}
+plot(c(1,2,3), c(4,5,9), xlab="x", ylab="y", main="Basic Plot", col="red", type="b", pch="x", xlim=c(0,30),ylim=c(0,16))
+```
+
+Plotting Histogram
+========================================================
+Saving a plot
+- R can direct the output to different targets.
+- png, bmp, tiff, jpeg are also valid targets.
+- pdf function can direct output to different pages and stores the plot in vector graphics. 
+```{r fig.width=10, fig.height=6, fig.show='hold', fig.align='center', echo=TRUE, eval=FALSE}
+getwd() # get working directory
+
+pdf("my_report.pdf") # select pdf file as the output target
+plot(mtcars$mpg, main="Kernel Density of Miles Per Gallon", type="l") # create plot
+dev.off() # save pdf file 
+```
+
+
+Plotting Histogram
+=======================================================
+```{r fig.width=10, fig.height=6, fig.show='hold', fig.align='center', echo=TRUE}
+hist(mtcars$mpg, xlab= "mpg", main="Histogram for MPG", breaks=10)
+```
+
+Plotting Probability Density Function
+========================================================
+```{r fig.width=10, fig.height=6, fig.show='hold', fig.align='center', echo=TRUE}
+plot(density(mtcars$mpg), main="Kernel Density of Miles Per Gallon")
+```
+
+Plotting A Data Frame
+========================================================
+```{r fig.width=13, fig.height=8, fig.show='hold', fig.align='center', echo=TRUE}
+plot(mtcars)
+```
+
+Boxplots
+========================================================
+<small>
+Boxplots are used to visualize and compare distributions. Shows the following:
+- Median: Horizontal line within rectangle
+- Lower quartile, Upper quartile: Lower and upper bounds of the rectangle
+- Max, minimum: Lower and upper whiskers
+- Outlier points: More than 1.5 times of upper quartile or less than lower quartile divided by 1.5
+</small>
+
+***
+
+```{r fig.width=6, fig.height=6, fig.show='hold', fig.align='center', echo=TRUE}
+boxplot(mtcars$mpg, xlab="cylinder count", ylab="mpg")
+```
+
+Boxplots
+========================================================
+<font size="6">
+```{r fig.width=9, fig.height=6, fig.show='hold', fig.align='center', echo=TRUE}
+boxplot(mtcars[mtcars$cyl==4,]$mpg, mtcars[mtcars$cyl==6,]$mpg, mtcars[mtcars$cyl==8,]$mpg, xlab="cylinder count", ylab="mpg", ylim=c(0,max(mtcars$mpg)))
+axis(1, 1:3, c("4 cylinder", "6 cylinder", "8 cylinder"))
+```
+</font>
+
+QQ Plots
+========================================================
+- Quantile-Quantile plot evaluates the fit of sample data to the normal distribution.
+- Might be important to check before applying certain statistical methods since some methods assume normal distribution.
+- The quantiles of the standard normal distribution is represented by a straight line. 
+- The normality of the data can be evaluated by observing the extent in which the points appear on the line. 
+- Might also give ideas about the distribution: heavy tailed, right skew etc.
+
+
+QQ Plots
+========================================================
+```{r fig.width=13, fig.height=6, fig.show='hold', fig.align='center', echo=TRUE}
+qqnorm(mtcars$wt, main="Q-Q plot sample")
+qqline(mtcars$wt, col="red")
+```
+
+Bar Plot
+========================================================
+```{r fig.width=11, fig.height=6, fig.show='hold', fig.align='center', echo=TRUE}
+par(oma = c(4, 0, 0, 0)) # oma changes margin
+barplot(mtcars$hp, names.arg=row.names(mtcars), las=2, ylab="Horse Power")
+```
+
+Interlude: Tables
+========================================================
+1 way tables counts instances along changes in single dimension.
+```{r}
+table(mtcars$gear)
+```
+
+Interlude: Tables
+========================================================
+2 way tables counts instances along changes two different dimensions
+```{r}
+table(mtcars$gear, mtcars$cyl)
+```
+
+Interlude: Tables
+========================================================
+Prop tables show the probabilities along an axis
+```{r}
+t <- table(mtcars$gear, mtcars$cyl)
+prop.table(t,1)
+```
+
+Stacked Bar Plot
+========================================================
+```{r fig.width=11, fig.height=6, fig.show='hold', fig.align='center', echo=TRUE}
+t <- table(mtcars$gear, mtcars$cyl)
+barplot(prop.table(t,2), legend=paste(unique(mtcars$gear), "gears"), ylab="Cumulative Probability", xlab="cylinders")
+```
+Grouped Bar Plot
+========================================================
+```{r fig.width=11, fig.height=6, fig.show='hold', fig.align='center', echo=TRUE}
+t <- table(mtcars$gear, mtcars$cyl)
+barplot(prop.table(t,2), legend=paste(unique(mtcars$gear), "gears"), ylab="Probability", xlab="cylinders", beside=TRUE)
+```
+Pie Charts
+========================================================
+```{r fig.width=5, fig.height=5, fig.show='hold', fig.align='center', echo=TRUE}
+slices <- c(10, 12,4, 16, 8)
+lbls <- c("US", "UK", "Australia", "Germany", "France")
+pie(slices, labels = lbls, main="Pie Chart of Countries")
+```
+
+Pie Charts
+========================================================
+Custom Colours:
+```{r fig.width=5, fig.height=5, fig.show='hold', fig.align='center', echo=TRUE}
+slices <- c(10, 12,4, 16, 8)
+lbls <- c("US", "UK", "Australia", "Germany", "France")
+pie(slices, labels = lbls, main="Pie Chart of Countries", col=c("green", "red","blue","white", "black"))
+```
+
+Pie Charts
+========================================================
+Custom Labels:
+```{r fig.width=5, fig.height=5, fig.show='hold', fig.align='center', echo=TRUE, eval=FALSE}
+slices <- c(10, 12,4, 16, 8)
+lbls <- c("US", "UK", "Australia", "Germany", "France")
+adv_lbls <- paste(paste(lbls, slices/sum(slices)*100), "%", sep="")
+```
+
+```{r fig.width=5, fig.height=5, fig.show='hold', fig.align='center', echo=FALSE}
+slices <- c(10, 12,4, 16, 8)
+lbls <- c("US", "UK", "Australia", "Germany", "France")
+adv_lbls <- paste(paste(lbls, slices/sum(slices)*100), "%", sep="")
+pie(slices, labels = adv_lbls, main="Pie Chart of Countries", col=c("green", "red","blue","white", "black"))
+```
+
+Subplots
+========================================================
+Multiple plots shown on same figure:
+```{r fig.width=10, fig.height=5, fig.show='hold', fig.align='center', echo=TRUE}
+par(mfrow=c(1,2))
+plot(mtcars$wt,mtcars$mpg, main="Scatterplot of wt vs. mpg")
+plot(mtcars$wt,mtcars$disp, main="Scatterplot of wt vs. disp")
+```
+
+Under the Hood
+========================================================
+Graphical parameters
+
+```{r fig.width=5, fig.height=5, fig.show='hold', fig.align='center', echo=TRUE, eval=FALSE}
+help(par)
+``` 
+
+Close a plot
+```{r}
+graphics.off()
+```
+
+
+Custom Package: GGPLOT
+========================================================
+- Created by Hadley Wickham
+- Used commonly to create publication quality graphics.
+
+```{r eval=FALSE}
+install.packages("ggplot2")
+```
+- Steeper learning curve.
+- Can be used to plot complicated figures by chaining functions.
+
+GGPLOT Examples
+========================================================
+```{r fig.width=10, fig.height=5, fig.show='hold', fig.align='center', echo=TRUE}
+library("ggplot2")
+qplot(carat, price, data = diamonds)
+```
+GGPLOT Examples
+========================================================
+Fit a line, show error bar and change opacity.
+```{r fig.width=10, fig.height=5, fig.show='hold', fig.align='center', echo=TRUE}
+library("ggplot2")
+qplot(carat, price, data = diamonds, geom = c("point", "smooth"), s, alpha = I(1/10))
+```
+
+GGPLOT Examples
+========================================================
+```{r fig.width=10, fig.height=5, fig.show='hold', fig.align='center', echo=TRUE}
+library("ggplot2")
+ggplot(mpg, aes(displ, hwy, color = factor(cyl))) + geom_point() + stat_smooth(method = "lm")
+```
+
+Showing Data on Maps
+========================================================
+Downloading Area Maps using Google Maps API
+
+
+```{r fig.width=5, fig.height=5, fig.show='hold', fig.align='center', echo=TRUE, eval=TRUE}
+require("ggmap")
+map <- get_map(location='Toronto', source="google", maptype="roadmap", zoom=12)
+ggmap(map)
+```
+
+Showing Data on Maps
+========================================================
+<font size="5">
+Finding Distances
+```{r}
+from <- c("toronto", "toronto")
+to <- c("montreal", "ottawa")
+mapdist(from, to, mode = "driving")
+```
+</font>
+
+Showing Data on Maps
+========================================================
+Getting Locations of Important Landmarks using Google Maps API
+```{r}
+geocode("cn tower")
+geocode("ryerson university")
+```
+
+Showing Data on Maps
+========================================================
+Showing Locations on The Maps
+<font size="3">
+```{r fig.width=5, fig.height=5, fig.show='hold', fig.align='center', echo=TRUE, eval=TRUE}
+lon<- c(-79.38706, -79.3788)
+lat<- c(43.64257, 43.65766)
+label <- c("CN Tower", "Ryerson University")
+df<-data.frame(lon,lat,label)
+map <- get_map(location='Toronto', source="google", maptype="roadmap", zoom=12 )
+ggmap(map) + geom_point(data = df,
+                 aes(x = lon, y = lat),
+                 fill = "red",
+                 colour = "black",
+                 size = 3,
+                 shape = 21) +
+             geom_text(data = df,
+                aes(x = lon,
+                    y = lat,
+                    label = label),
+                color = 'blue')
+```
+</font>
+
+Dealing with Many Data Points
+========================================================
+- Jittering
+```{r fig.width=10, fig.height=5, fig.show='hold', fig.align='center', echo=TRUE}
+p <- ggplot(mpg, aes(displ, hwy))
+p + geom_point()
+
+```
+
+Dealing with Many Data Points
+========================================================
+- Jittering
+```{r fig.width=10, fig.height=5, fig.show='hold', fig.align='center', echo=TRUE}
+p <- ggplot(mpg, aes(displ, hwy))
+p + geom_point(position="jitter", width=0.05, height=1)
+```
+
+
+
+Dealing with Many Data Points
+========================================================
+- Would plotting weight vs height of every person in the world be meaningful?
+- Group large data before plotting.
+- Use methods such as histograms to show the distributions.
+- Do not forget: Computer screens have limited pixels. Humans have limited cognitive capability.
+
+A Few Tips
+========================================================
+<br />
+- Use colours sparingly.
+- Use multiple subplots for complex data.
+- Use 3d plots sparingly.
+- Use jittering with large data. For very large datasets you may try summarizing the data before visualizing it. 
+- Do not forget that computer screen can show just a couple of million pixels.
+
+A Few Tips
+========================================================
+- Relative axis limits might make small changes look dramatic. Avoid that if possible.
+- A good plot should not be deceiving.
+
+***
+
+```{r fig.width=6, fig.height=6, fig.show='hold', fig.align='center', echo=TRUE}
+plot(c(1,2), c(12, 12.0001), type = "l", ylab="GDP", xlab="months")
+```
+
+Further References
+========================================================
+<small>
+- ggplot tutorial: https://www.youtube.com/watch?v=TaxJwC_MP9Q
+- R Graphics Cookbook - Winston Chang - O'REILLY - http://www.cookbook-r.com/Graphs/
+- GGmap - http://journal.r-project.org/archive/2013-1/kahle-wickham.pdf
+- Check web for some really cool examples.
+- The Visual Display of Quantitative Information, 2nd edition - Edward R. Tufte
+- Interactive visualization with Shiny: http://shiny.rstudio.com/
+- Some Public Datasets: http://vincentarelbundock.github.io/Rdatasets/datasets.html
+</small>
+
+
+Lab Session
+========================================================
+Preparation
+-------------------
+- Load the computer price data [(doc)](http://vincentarelbundock.github.io/Rdatasets/doc/Ecdat/Computers.html):
+<font size="5">
+```{r eval=FALSE}
+library(RCurl)
+u <- getURL("http://vincentarelbundock.github.io/Rdatasets/csv/Ecdat/Computers.csv")
+c_prices <- read.csv(text = u)
+```
+</font>
+- Load Sales Data of Men's Fashion Stores [(doc)](http://vincentarelbundock.github.io/Rdatasets/doc/Ecdat/Clothing.html):
+<font size="5">
+```{r eval=FALSE}
+library(RCurl)
+u <- getURL("http://vincentarelbundock.github.io/Rdatasets/csv/Ecdat/Clothing.csv")
+c_sales <- read.csv(text = u)
+```
+</font>
+
+
+- Save your plots as images after you solve a problem.
+
+
+Lab Session
+========================================================
+Part 1
+-------------------
+- Plot computer price vs harddisk space. How can you deal with data points with same values? 
+- Plot a pie chart of computer count with different amount of RAM.
+- Show relation of every pair of variables in the clothing sales dataset on a single plot..
+- Plot a histogram of computer harddisk storage spaces.
+
+Lab Session
+========================================================
+Part 2
+-------------------
+- Compare the prices of computer with different amount of ram using box plot.
+- Is the price distribution of computers similar to a normal distribution?
+- Show Pisa Tower on a map.
+- Find the walking distance between New York City and Los Angeles using ggmaps.

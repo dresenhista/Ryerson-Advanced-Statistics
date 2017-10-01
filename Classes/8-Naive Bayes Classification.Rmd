@@ -1,0 +1,97 @@
+---
+title: "Week 8 Application Part"
+output: beamer_presentation
+---
+```{r setup, cache = F, echo = F, message = F, warning = F, tidy = F, results='hide'}
+library("knitr")
+options(width = 1000)
+opts_chunk$set(message = F, error = F, warning = F, comment = NA, fig.align = 'center', dpi = 300)
+```
+
+
+## Preparation
+```{r, warning=FALSE, results='hide'}
+library("tm") # text mining package for R
+library("RCurl") # get text from the web
+library("klaR") # implementation of naive bayes in R
+library("caret") # experimental design
+```
+
+## Importing and Analyze Text Data
+```{r, warning=FALSE}
+data("crude")
+# strip white space
+crude <- tm_map(crude, stripWhitespace)
+# remove stop words
+crude <- tm_map(crude, removeWords, stopwords("english"))
+# stem words
+crude <- tm_map(crude, stemDocument)
+```
+
+## Finding Frequent terms
+
+```{r, warning=FALSE}
+dtm <- DocumentTermMatrix(crude)
+# at least 10 occurrence
+findFreqTerms(dtm,10)
+```
+## Finding associations
+
+Finding associations
+
+```{r, warning=FALSE}
+findAssocs(dtm, "opec", 0.8)
+```
+
+## Finding tf
+
+```{r, warning=FALSE}
+dtm <- DocumentTermMatrix(crude, 
+       control = list(weighting = weightTfIdf))
+# three important terms for the first document
+sort(as.matrix(dtm)[1,], decreasing=T)[1:3]
+```
+
+## Naive Bayes Implementation 
+
+```{r}
+rn_train <- sample(nrow(iris), 
+                   floor(nrow(iris)*0.7))
+train <- iris[rn_train,]
+test <- iris[-rn_train,]
+model <- NaiveBayes(Species~., data=train)
+```
+
+## Naive Bayes Implementation 
+Show posterior probability densities
+```{r fig.width = 4, fig.height= 3}
+plot(model)
+```
+## Naive Bayes Implementation 
+
+```{r, warning=FALSE, fig.width = 4, fig.height= 3}
+# make predictions
+predictions <- predict(model, test)
+# summarize results
+confusionMatrix(predictions$class, predictions$class)
+```
+
+## Lab Preparation
+
+```{r, warning=FALSE, eval=FALSE}
+library("RWeka") # rweka (embedded Weka software)
+
+diabetes <- read.arff(system.file("arff", "diabetes.arff", 
+                                  package = "RWeka"))
+data("acq")
+
+```
+
+## Lab Problems:
+
+1. Process acq text by stemming and create a document term matrix.
+2. Show 3 important terms for **each** document using tf . 
+2. Run Naive Bayes using diabetes dataset.
+3. Show posterior probability densities of diabetes.
+4. (optional) Find and use the naive bayes functionality of weka for the same dataset.
+

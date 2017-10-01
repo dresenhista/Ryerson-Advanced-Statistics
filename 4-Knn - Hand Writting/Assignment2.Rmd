@@ -7,16 +7,15 @@ output: pdf_document
 \newpage
 
 #Introduction
-One of most challenging problems in these days is to recognize patterns for images.
-In this document the methodology KNN is applied in order to find patterns in the hand writing of numbers from 0-9 and try to predict them using these patterns.
+In this document the methodology KNN is applied in order to find patterns in the hand writing of numbers from 0-9 and try to predict them using these groups.
 
 In this aspiration we have challenges such as: 
-- each person has their own way of writing a number;
+- each person has their own way of writing number;
 - some numbers are very similar to others, like 1 and 7, or 6, 8 and 9.
 - find the better number of neighborhood in order to optimize the algorithm.
 
 #Data Explanation
-In order to apply this algorithm we have each number divided in a matrix 4 x 4 resulting in 16 variables presented as columns in our data set. The last column is the number class.
+In order to apply this algorithm we have each number divided in a matrix 4 x4 resulting in 16 variables presented as columns in our data set. The last column is the number class.
 
 For this project we have two files, one for training and one for testing. The testing data set contains 3497 samples and the training has 7493.
 
@@ -45,7 +44,7 @@ evaluate_Weka_classifier(classifier, testing_data)
 
 
 ```
-So we have an accuracy of 97.59% of the cases, and in this project we need to find the best K for set of data.
+So we have a accuracy of 97.59% of the cases, and in this project we need to find the best K for set of data.
 
 Running the same algorithm for other cases we found that k=1 has the best Correctly Classified Instances:
 

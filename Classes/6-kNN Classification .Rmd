@@ -1,0 +1,143 @@
+---
+title: "Week 6 Application Part"
+output: beamer_presentation
+---
+```{r setup, cache = F, echo = F, message = F, warning = F, tidy = F, results='hide'}
+library("knitr")
+options(width = 1000)
+opts_chunk$set(message = F, error = F, warning = F, comment = NA, fig.align = 'center', dpi = 300)
+```
+
+
+## Preparation
+```{r, warning=FALSE, results='hide'}
+library("RWeka") # rweka (embedded Weka software)
+library("kknn") # knn library
+```
+
+## Control structure overview
+For loops:
+```{r, warning=FALSE}
+for(i in seq(1,5)){
+    print(i);
+}
+```
+
+## Control structure overview
+While loops:
+```{r, warning=FALSE}
+i <- 0;
+while(i < 5) {
+  i <- i+1; 
+  print(i);
+  }
+```
+
+## Initially, we will implement kNN the hard way.
+
+*Without additional libraries*
+
+## Step 1: Training and testing samples:
+Let us define training and testing samples.
+```{r, warning=FALSE}
+x <- c(1, 7, 3, 1)
+y <- c(4, 1, 12, 7)
+class <- c("o", "o", "x", "x")
+training <- data.frame(x=x, y=y, class=class,
+                       stringsAsFactors=F)
+
+test <- c(5, 4)
+```
+
+## Step 2: Visualize the dataset:
+
+```{r, warning=FALSE}
+plot(training[c(1,2),1], training[c(1,2),2], pch="o",
+     xlim=c(0,8), ylim=c(0,13), col="red",xlab="x",
+     ylab="y") 
+points(training[c(3,4),1], training[c(3,4),2], pch="x",
+       col="blue")
+points(test[1], test[2], pch="%", col="green")
+```
+
+## Step 3: Setup initial minimum distances:
+```{r, warning=FALSE}
+
+k= 2;
+min_distances <- data.frame(d=rep(c(Inf), k), 
+                            c=rep(c("unknown"), k),
+                          stringsAsFactors=F)
+```
+
+## Step 4: Training and find the min distances:
+```{r, warning=FALSE}
+for(i in 1:nrow(training)) {
+    row <- training[i,];
+    distance <- sqrt((test[1] - row$x)**2 + 
+                       (test[2] - row$y)**2);
+    if(distance< max(min_distances$d)){
+      min_distances[which.max(min_distances$d),"d"] <- 
+        distance;
+      min_distances[which.max(min_distances$d),"c"] <- 
+        row$class;
+    }
+}
+```
+
+## Step 5: Find the most common class
+```{r, warning=FALSE}
+table(min_distances$c)
+```
+
+## Here is an easier method
+
+Weka is a well known machine learning platform.
+You may try weka implementation of knn!
+
+http://www.cs.waikato.ac.nz/ml/weka/
+
+```{r, warning=FALSE, eval=FALSE}
+iris <- read.arff(system.file("arff", "iris.arff", 
+                              package = "RWeka"))
+classifier <- IBk(class ~., data = iris,
+          control = Weka_control(K = 20))
+evaluate_Weka_classifier(classifier, numFolds = 10)
+```
+
+
+## Scaling variables
+
+Standardization:
+
+```{r, warning=FALSE}
+a <- c(1, 100, 10000)
+scale(a)
+```
+
+## Scaling variables
+
+Between 0 to 1:
+
+```{r, warning=FALSE}
+scale(a, center = min(a), scale = max(a) - min(a))
+```
+
+
+
+## Lab Preparation
+
+```{r, warning=FALSE, eval=FALSE}
+library("RWeka") # rweka (embedded Weka software)
+library("kknn") # knn library
+diabetes <- read.arff(system.file("arff", "diabetes.arff", 
+                                  package = "RWeka"))
+```
+
+## Lab problems:
+
+1. Visualize the classes for the distributions of insu and age.
+2. Do knn with weka interface using diabetes data.
+3. Scale the numeric columns of diabetes between 0 and 1.
+4. Scale the numeric columns of diabetes with mean=0 and stddev=1.
+5. Do knn with weka interface and updated column scales. Do results change?
+6. (optional) Implement knn without using any third party libraries.

@@ -1,0 +1,119 @@
+---
+title: "Week 4 Application Part"
+output: 
+  beamer_presentation:
+    fig_width: 4
+    fig_height: 4
+---
+
+
+
+## Finding Correlation Coefficients
+Spearman:
+```{r echo=TRUE}
+cor(iris$Sepal.Length, iris$Petal.Length, 
+    method="spearman")
+```
+Pearson:
+```{r echo=TRUE}
+cor(iris$Sepal.Length, iris$Petal.Length, 
+    method="pearson")
+```
+
+## Correlation Matrix
+```{r echo=TRUE}
+cor(iris[,1:3])
+```
+
+## Visualizing Correlation
+```{r echo=FALSE, eval=TRUE}
+require("corrplot")
+```
+
+```{r setup, echo=FALSE}rel
+library("knitr")
+opts_chunk$set(dev = 'pdf')
+```
+
+```{r echo=TRUE, fig.width=10, fig.height=10}
+corrplot(cor(mtcars), method="ellipse")
+```
+
+## Significance of Correlation Coefficients
+```{r echo=TRUE}
+cor.test(iris$Sepal.Length, iris$Petal.Length, 
+         method = c("pearson"))
+```
+
+## Linear Regression: Fitting the Model
+```{r echo=TRUE}
+plot(airquality$Wind, airquality$Temp)
+```
+
+## Linear Regression: Fitting the Model
+```{r echo=TRUE}
+model_ulm <- lm(Wind~Temp, data=airquality) 
+summary(model_ulm)
+```
+## Linear Regression: Prediction
+```{r echo=TRUE, eval=FALSE}
+rn_train <- sample(nrow(airquality), 
+                   floor(nrow(airquality)*0.8))
+train <- airquality[rn_train,c("Wind","Temp")]
+test <- airquality[-rn_train,]
+model_ulm <- lm(Wind~Temp, data=train) 
+prediction <- predict(model_ulm, interval="prediction", 
+                      newdata =test)
+```
+```{r echo=FALSE, eval=TRUE}
+rn_train <- sample(nrow(airquality), 
+                   floor(nrow(airquality)*0.8))
+train <- airquality[rn_train,c("Wind","Temp")]
+test <- airquality[-rn_train,]
+model_ulm <- lm(Wind~Temp, data=train) 
+prediction <- predict(model_ulm, interval="prediction", 
+                      newdata =test)
+```
+
+## Linear Regression: Error Distribution
+```{r echo=TRUE, fig.width=10, fig.height=10}
+errors <- prediction[,"fit"] - test$Wind
+hist(errors)
+```
+
+## Linear Regression: RMSE
+```{r echo=TRUE}
+sqrt(sum((prediction[,"fit"] - test$Wind)^2)/nrow(test))
+```
+
+## Linear Regression: PRED(25)
+Find the percentage of cases with less than 25 percent error:
+```{r echo=TRUE}
+rel_change <- 1 - ((test$Wind - abs(errors)) / test$Wind)
+table(rel_change<0.25)["TRUE"] / nrow(test)
+```
+
+## Lab
+**Preparation**
+Required Libraries
+```{r echo=TRUE, eval=FALSE}
+install.packages("corrplot")
+require("corrplot")
+```
+## Lab
+**Preparation**
+Data load
+```{r echo=TRUE, eval=FALSE}
+library(RCurl)
+u <- getURL("http://vincentarelbundock.github.io/Rdatasets/csv/Ecdat/Computers.csv")
+c_prices <- read.csv(text = u)
+```
+
+## Lab Questions
+1- Find spearman correlation between hard disk space and ram.
+
+2- Visualize the correlation of the numeric columns in the computer prices dataset.
+
+3- Choose a single variable to predict price and build an univariate linear regression model.
+
+4- Experiment with 30 percent split of the data. Report error distribution, RMSE and pred(25)

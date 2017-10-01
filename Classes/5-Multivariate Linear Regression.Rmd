@@ -1,0 +1,114 @@
+---
+title: "Week 5 Application Part"
+output: beamer_presentation
+---
+```{r setup, cache = F, echo = F, message = F, warning = F, tidy = F, results='hide'}
+library("knitr")
+options(width = 1000)
+opts_chunk$set(message = F, error = F, warning = F, comment = NA, fig.align = 'center', dpi = 100)
+```
+
+
+## Preparation
+```{r, warning=FALSE, results='hide'}
+library(caret) # experiment design
+library(MASS) # stepwise regression
+library(leaps) # all subsets regression
+library(glmnet) # for regularized linear regression
+```
+
+## Multivariate Linear Regression
+```{r}
+model_mlr <- lm(Temp~Month+Wind, data=airquality) 
+summary(model_mlr)
+```
+
+## Multivariate Linear Regression: Test Example
+```{r echo=TRUE, eval=TRUE}
+rn_train <- sample(nrow(airquality), 
+                   floor(nrow(airquality)*0.8))
+train <- airquality[rn_train,]
+test <- airquality[-rn_train,]
+model_mlr <- lm(Temp~Month+Wind, data=train) 
+prediction <- predict(model_mlr, interval="prediction", 
+                      newdata=test)
+```
+## Multivariate Linear Regression: RMSE
+
+```{r echo=TRUE}
+sqrt(sum((prediction[,"fit"] - test$Temp)^2)/nrow(test))
+```
+
+## Linear Regression: PRED(10)
+Find the percentage of cases with less than 10 percent error:
+```{r echo=TRUE}
+errors <- prediction[,"fit"] - test$Temp
+rel_change <- 1 - ((test$Temp - abs(errors)) / test$Temp)
+table(rel_change<0.10)["TRUE"] / nrow(test)
+```
+
+## Stepwise Linear Regression - Forward
+
+Start from a null formula. Go forward.
+
+```{r echo=TRUE}
+full <- lm(mpg~wt+hp+disp+gear,data=mtcars)
+null <- lm(mpg~1,data=mtcars)
+stepF <- stepAIC(null, scope=list(lower=null, upper=full), 
+                direction= "forward", trace=FALSE)
+summary(stepF)
+```
+
+## Stepwise Linear Regression - Backward
+
+Start from a full formula. Go back.
+
+```{r echo=TRUE}
+full <- lm(mpg~wt+hp+disp+gear,data=mtcars)
+stepB <- stepAIC(full, direction= "backward", trace=FALSE)
+summary(stepB)
+```
+
+## Best Subset
+
+Select the best subset of the variables through exhaustive search.
+
+```{r}
+subsets<-regsubsets(mpg~wt+hp+disp+gear,data=mtcars,
+                    nbest=2)
+sub.sum <- summary(subsets)
+as.data.frame(sub.sum$outmat)
+```
+
+## Regularized Linear Regression
+
+See the effect of $\lambda$ on test performance.
+
+```{r, fig.width = 4, fig.height= 3}
+cv.fit <- cv.glmnet(as.matrix(mtcars[,-1]), 
+                    as.vector(mtcars[,1]), nlambda=100)
+plot(cv.fit)
+```
+
+## Lab 
+**Preparation**
+Data load
+```{r echo=TRUE, eval=FALSE, size='small'}
+library(RCurl)
+l<-"http://vincentarelbundock.github.io/\
+Rdatasets/csv/Ecdat/Computers.csv"
+u <- getURL(l)
+c_prices <- read.csv(text = u)
+```
+
+## Lab Questions
+
+**Use c_prices data**
+
+1- Build a multivariate linear regression model with any 5 attributes to predict price. Compare the performance with univariate regression model.
+
+2- Do stepwise regression (backward/forward) for the model  you created for question 1 to check if you can simplify the model.
+
+3- Find the best combination of 5 attributes.
+
+4- Plot regularized linear regression error rate as a function of lambda for your regression model 1.

@@ -1,0 +1,111 @@
+---
+title: "Week 9 Application Part: Data Pre-processing with R"
+output: beamer_presentation
+---
+```{r setup, cache = F, echo = F, message = F, warning = F, tidy = F, results='hide'}
+library("knitr")
+options(width = 1000)
+opts_chunk$set(message = F, error = F, warning = F, comment = NA, fig.align = 'center', dpi = 300)
+```
+
+
+## Preparation
+```{r, warning=FALSE, results='hide'}
+library("RSQLite")
+```
+
+## Connect to an in memory SQLite Database
+
+In memory database is stored in memory. Deleted when connection is closed. 
+
+```{r, warning=FALSE, results='hide'}
+sqlite    <- dbDriver("SQLite")
+m_con <- dbConnect(sqlite, dbname=":memory:")
+```
+## Connect to a SQLite database file
+
+Sqlite stores files into. Sqlite do not have advanced capabilities of other sql databases such as concurrency, user rights etc.. However, it is light weight, easy to share and scales pretty well. 
+
+```{r, warning=FALSE, results='hide'}
+sqlite    <- dbDriver("SQLite")
+m_con = dbConnect(sqlite, dbname="my_db.sqlite3")
+```
+
+## Export data frame to table
+
+```{r, warning=FALSE, results='hide'}
+dbSendQuery(m_con, "DROP TABLE IF EXISTS mtcars")
+dbWriteTable(m_con, "mtcars", mtcars)
+```
+
+## Query sqlite database and populate data frame
+
+```{r, warning=FALSE}
+dbReadTable(m_con, "mtcars")
+```
+
+## Form advanced queries
+
+```{r, warning=FALSE}
+dbGetQuery(m_con, 
+"select * from mtcars where wt > 3")
+```
+
+## Sampling
+
+An example of over-sampling:
+
+```{r, warning=FALSE}
+classes <- unique(iris$Species)
+samples <- iris[0,]
+for (c in classes){
+    samples<- rbind(
+        iris[sample(nrow(iris[iris$Species==c,]), 
+                    100, replace=T), ],
+        samples
+    )
+}
+nrow(samples)
+```
+
+
+## PCA Example
+
+```{r, warning=FALSE}
+cor(iris[,c(1,2,3,4)])
+```
+
+## PCA Example
+
+```{r, warning=FALSE}
+pca <- prcomp(iris[,c(1,2,3,4)]) 
+cor(pca$x)
+```
+
+## PCA Example
+
+```{r, warning=FALSE}
+summary(pca)
+```
+
+## Lab Preparation
+
+```{r, warning=FALSE, eval=FALSE}
+library("RWeka") # rweka (embedded Weka software)
+
+diabetes <- read.arff(system.file("arff", "diabetes.arff", 
+                                  package = "RWeka"))
+```
+
+## Lab Problems:
+
+**Lab questions will be distributed before the class.**
+
+1. Save diabetes dataset to an sqlite database
+2. Load the diabetes dataset from the sqlite database.
+3. (optional) Run a query on the newly formed database
+4. Process numeric columns of the diabetes dataset with PCA. Check the correlations before and after the operation
+5. Run logistic regression on the diabetes dataset before and after applying PCA. Check the difference.
+
+
+

@@ -1,0 +1,98 @@
+---
+title: "Week 3 Application Part"
+output: beamer_presentation
+---
+
+
+## Identification of Missing Values
+```{r echo=TRUE}
+a <- cbind(x=c(1,2,NA), y=c(NA,1,2))
+a
+complete.cases(a)
+```
+
+## Identification of Missing Values
+```{r echo=TRUE}
+a <- cbind(x=c(1,2,NA), y=c(NA,1,2))
+a[!complete.cases(a),]
+```
+
+
+## Removing Instances with Missing Values
+```{r echo=TRUE}
+a <- cbind(x=c(1,2,NA), y=c(NA,1,2))
+na.omit(a)
+```
+
+
+## Changing Missing Values
+```{r echo=TRUE}
+a <- cbind(x=c(1,2,NA), y=c(NA,1,2))
+a[is.na(a)] <- 0
+a
+```
+
+
+## Creation of Test and Training Data
+
+Create random split
+```{r echo=TRUE}
+rn_train <- sample(nrow(iris), floor(nrow(iris)*0.7))
+train <- iris[rn_train,]
+test <- iris[-rn_train,]
+```
+
+## Creation of Test and Training Data
+
+Cross validation:
+
+```{r echo=TRUE, }
+library(caret)
+library(mlbench)
+data(Sonar)
+folds <- createFolds(Sonar$Class)
+```
+
+
+## Creation of Test and Training Data
+
+Cross validation:
+
+```{r echo=TRUE, }
+str(folds)
+```
+
+
+## Creation of Test and Training Data
+
+Cross validation:
+```{r echo=TRUE, }
+for (f in folds){
+  train <- Sonar[-f,] 
+  test <- Sonar[f,]
+  #do stuff
+  }
+```
+
+## Lab Section - 1
+
+1. Find the instances in airquality dataset with missing values.
+2. Remove instances with missing data in airquality dataset.
+3. Randomly split mtcars dataset to 80% training samples and 20% test samples.
+4. Create 10 fold cross validation pairs for iris dataset.
+
+## Lab Section - 2
+
+Find the following probabilities in mtcars dataset (hint: use prop.tables from week 2)
+
+1. P(4cylinder | 3 gears)
+2. P(4cylinder,4 gears)
+3. P(4cylinder)
+
+## Homework 
+
+1. Individual work
+2. Send code+report through blackboard.
+3. No paper report required
+4. Deadline: 22 Feb 2015 (hard)
+
